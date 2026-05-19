@@ -1,7 +1,7 @@
 {
 	"schemaVersion": 1,
 	"id": "hearth",
-	"version": "0.0.1",
+	"version": "1.0.0",
 	"name": "Hearth",
 	"description": "Where there's smoke, there's a hearth; Where there's a hearth, there's a heart.",
 	"authors": [
