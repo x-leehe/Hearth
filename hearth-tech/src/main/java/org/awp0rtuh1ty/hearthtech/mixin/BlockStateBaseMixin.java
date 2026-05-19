@@ -12,8 +12,9 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 /**
- * 拦截 BlockStateBase.getPistonPushReaction()，
- * 为集尘袋根据 piston_state 返回对应的活塞行为
+ * 拦截 getPistonPushReaction()，为集尘袋提供动态活塞行为：
+ * - 默认（未上蜡）→ DESTROY（可推破坏，类似潜影盒）
+ * - 上蜡 → BLOCK（不可推动）
  */
 @Mixin(BlockBehaviour.BlockStateBase.class)
 public abstract class BlockStateBaseMixin {
@@ -25,15 +26,10 @@ public abstract class BlockStateBaseMixin {
         if (!(block instanceof DustBagBlock)) {
             return;
         }
-        if (!state.hasProperty(HearthTechProperties.PISTON_STATE)) {
+        if (!state.hasProperty(HearthTechProperties.WAXED)) {
             return;
         }
-        int pistonState = state.getValue(HearthTechProperties.PISTON_STATE);
-        PushReaction reaction = switch (pistonState) {
-            case 1 -> PushReaction.NORMAL;
-            case 2 -> PushReaction.DESTROY;
-            default -> PushReaction.BLOCK;
-        };
-        cir.setReturnValue(reaction);
+        boolean waxed = state.getValue(HearthTechProperties.WAXED);
+        cir.setReturnValue(waxed ? PushReaction.BLOCK : PushReaction.DESTROY);
     }
 }

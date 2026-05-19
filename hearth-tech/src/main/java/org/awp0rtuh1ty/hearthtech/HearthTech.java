@@ -77,7 +77,13 @@ public class HearthTech implements ModInitializer {
                 return stack;
             }
 
-            // 不可催熟 → 射出物品（手动实现默认行为）
+            // 不可催熟 → 尝试水炼药锅淘金
+            if (tryGoldPanning(level, targetPos, targetState)) {
+                stack.shrink(1);
+                return stack;
+            }
+
+            // 都不行 → 射出物品
             return defaultDispense(source, stack);
         });
     }
@@ -94,43 +100,54 @@ public class HearthTech implements ModInitializer {
             if (!targetState.is(Blocks.WATER_CAULDRON)) {
                 return defaultDispense(source, stack);
             }
-
-            int waterLevel = targetState.getValue(LayeredCauldronBlock.LEVEL);
-            if (waterLevel <= 0) {
+            if (!tryGoldPanning(level, targetPos, targetState)) {
                 return defaultDispense(source, stack);
             }
-
-            if (level instanceof ServerLevel serverLevel) {
-                LayeredCauldronBlock.lowerFillLevel(targetState, level, targetPos);
-
-                List<Item> nuggetItems = new ArrayList<>();
-                BuiltInRegistries.ITEM.getTagOrEmpty(NUGGETS_TAG).forEach(holder -> {
-                    nuggetItems.add(holder.value());
-                });
-
-                if (!nuggetItems.isEmpty()) {
-                    int count = serverLevel.getRandom().nextInt(1, 10);
-                    Item randomNugget = nuggetItems.get(serverLevel.getRandom().nextInt(nuggetItems.size()));
-                    ItemStack result = new ItemStack(randomNugget, count);
-
-                    ItemEntity itemEntity = new ItemEntity(
-                            level,
-                            targetPos.getX() + 0.5,
-                            targetPos.getY() + 1.0,
-                            targetPos.getZ() + 0.5,
-                            result);
-                    itemEntity.setDefaultPickUpDelay();
-                    level.addFreshEntity(itemEntity);
-                }
-
-                level.playSound(null, targetPos, SoundEvents.GENERIC_SPLASH,
-                        SoundSource.BLOCKS, 1.0F, 1.0F);
-                level.gameEvent(null, GameEvent.FLUID_PICKUP, targetPos);
-            }
-
             stack.shrink(1);
             return stack;
         });
+    }
+
+    /**
+     * 对水炼药锅执行淘金，返回是否成功
+     */
+    private static boolean tryGoldPanning(Level level, BlockPos targetPos, BlockState targetState) {
+        if (!targetState.is(Blocks.WATER_CAULDRON)) {
+            return false;
+        }
+        int waterLevel = targetState.getValue(LayeredCauldronBlock.LEVEL);
+        if (waterLevel <= 0) {
+            return false;
+        }
+
+        if (level instanceof ServerLevel serverLevel) {
+            LayeredCauldronBlock.lowerFillLevel(targetState, level, targetPos);
+
+            List<Item> nuggetItems = new ArrayList<>();
+            BuiltInRegistries.ITEM.getTagOrEmpty(NUGGETS_TAG).forEach(holder -> {
+                nuggetItems.add(holder.value());
+            });
+
+            if (!nuggetItems.isEmpty()) {
+                int count = serverLevel.getRandom().nextInt(1, 10);
+                Item randomNugget = nuggetItems.get(serverLevel.getRandom().nextInt(nuggetItems.size()));
+                ItemStack result = new ItemStack(randomNugget, count);
+
+                ItemEntity itemEntity = new ItemEntity(
+                        level,
+                        targetPos.getX() + 0.5,
+                        targetPos.getY() + 1.0,
+                        targetPos.getZ() + 0.5,
+                        result);
+                itemEntity.setDefaultPickUpDelay();
+                level.addFreshEntity(itemEntity);
+            }
+
+            level.playSound(null, targetPos, SoundEvents.GENERIC_SPLASH,
+                    SoundSource.BLOCKS, 1.0F, 1.0F);
+            level.gameEvent(null, GameEvent.FLUID_PICKUP, targetPos);
+        }
+        return true;
     }
 
     /**

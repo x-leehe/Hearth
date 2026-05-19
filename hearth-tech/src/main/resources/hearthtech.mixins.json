@@ -4,7 +4,9 @@
     "compatibilityLevel": "JAVA_21",
     "mixins": [
         "BlockStateBaseMixin",
-        "DustBagBlockMixin"
+        "DustBagBlockMixin",
+        "ItemStackMixin",
+        "SignBlockMixin"
     ],
     "injectors": {
         "defaultRequire": 1

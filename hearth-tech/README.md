@@ -5,7 +5,7 @@
 
 > 依赖模组：[Hearth（草木灰）](https://github.com/x-leehe/Hearth)
 
-Hearth Tech 是 **Hearth（草木灰）模组**的生电扩展，为原模组的草木灰、炉渣、集尘袋等物品方块添加自动化/发射器/活塞兼容功能，使其更好地融入生电（技术生存）玩法。
+Hearth Tech 是 **Hearth（草木灰）模组**的生电扩展，为原模组的草木灰、炉渣、集尘袋等物品方块添加自动化/发射器/活塞兼容功能。
 
 ---
 
@@ -13,36 +13,41 @@ Hearth Tech 是 **Hearth（草木灰）模组**的生电扩展，为原模组的
 
 ### 1. 发射器兼容
 
-#### 发射器使用草木灰 → 催熟作物
+#### 发射器使用草木灰 → 催熟作物 / 水炼药锅淘金
 
-遵循**原版骨粉**的发射器行为。将草木灰放入发射器，发射器会对前方可催熟的作物（小麦、胡萝卜等）直接催熟至成熟。
-
-- 不可催熟的方块 → 草木灰作为物品射出（无浪费）
-- 音效：骨粉使用音效
+将草木灰放入发射器：
+- **前方为可催熟作物** → 直接催熟至成熟（遵循原版骨粉行为）
+- **前方为水炼药锅** → 消耗草木灰，降低水位，掉落 1~9 个随机粒
+- **其他方块** → 作为物品射出
 
 #### 发射器使用炉渣 → 水炼药锅淘金
 
-遵循**原版水瓶**的发射器行为。将炉渣放入发射器，发射器会对前方水炼药锅消耗炉渣并产出 1~9 个随机粒（铁粒、金粒等），产物直接掉落在世界中。
+将炉渣放入发射器：
+- **前方为水炼药锅** → 消耗炉渣，降低水位，掉落 1~9 个随机粒（铁粒、金粒等）
+- **其他方块** → 作为物品射出
 
-- 非水炼药锅 → 炉渣作为物品射出
-- 空炼药锅 → 炉渣作为物品射出
-
-### 2. 集尘袋活塞状态修改
+### 2. 集尘袋活塞/堆叠机制
 
 > **仅玩家右键有效**，发射器/投掷器无法触发。
 
-集尘袋新增 `piston_state` 属性，玩家可通过手持特定物品右键集尘袋来改变其活塞行为：
+| 状态 | 活塞行为 | 物品堆叠 |
+|------|----------|----------|
+| 默认（放置后） | **可推动破坏**（类似潜影盒） | 含物品时最大堆叠 **1**，空袋可堆叠 **64** |
+| 蜜脾上蜡 | **不可推动** | 不变 |
+| 荡涤药水清洗 | **恢复默认**（可推破坏） | 不变 |
 
-| 手持物品 | 状态 | 活塞行为 | 说明 |
-|----------|------|----------|------|
-| 无（默认） | `0` | **不可推动** | 默认状态，活塞无法推动 |
-| 蜜蜡 | `1` | **可推动，不掉落** | 上蜡保护，数据保留（参考告示牌上蜡） |
-| 水瓶 | `2` | **可推动且掉落** | 推动时掉落为物品（参考原版潜影盒） |
-| 草木灰 | `3` | **不可推动** | 加固状态 |
+- **蜜脾右键** → 上蜡，播放上蜡音效（参考告示牌上蜡）
+- **荡涤药水右键** → 清洗恢复默认，消耗药水返还空玻璃瓶
 
-- **蜜蜡上蜡**：消耗1个蜜蜡，播放上蜡音效
-- **水瓶浇淋**：消耗1个水瓶，返还空玻璃瓶
-- **草木灰加固**：消耗1个草木灰
+### 3. 告示牌清洗
+
+> **仅玩家右键有效**，仅普通荡涤药水，**不实现**喷溅/滞留型。
+
+手持荡涤药水右键告示牌，同时清除：
+- **上蜡状态**（蜂蜜涂蜡）
+- **荧光效果**（荧光墨囊涂色）
+
+消耗药水，返还空玻璃瓶。
 
 ---
 
@@ -58,14 +63,11 @@ Hearth Tech 是 **Hearth（草木灰）模组**的生电扩展，为原模组的
 ### 构建
 
 ```bash
-# 1. 先构建主模组 Hearth
-./gradlew :build -x test
-
-# 2. 构建生电扩展 Hearth Tech
-./gradlew :hearth-tech:build -x test
+./gradlew :build -x test           # 先构建主模组
+./gradlew :hearth-tech:build -x test  # 构建生电扩展
 ```
 
-构建产物位于 `hearth-tech/build/libs/hearthtech-1.0.0.jar`。
+构建产物位于 `hearth-tech/build/libs/hearth-tech-1.0.0.jar`。
 
 ---
 
@@ -74,34 +76,29 @@ Hearth Tech 是 **Hearth（草木灰）模组**的生电扩展，为原模组的
 ### 项目结构
 
 ```
-hearth-tech/                    # 生电扩展子项目
-├── build.gradle.kts            # Gradle 构建配置
+hearth-tech/
+├── build.gradle.kts
 └── src/main/
     ├── java/.../hearthtech/
-    │   ├── HearthTech.java             # 主入口（注册发射器行为）
-    │   ├── HearthTechProperties.java   # 共享方块属性常量
+    │   ├── HearthTech.java              # 主入口（发射器行为注册）
+    │   ├── HearthTechProperties.java    # 共享方块属性（WAXED）
     │   └── mixin/
-    │       ├── BlockStateBaseMixin.java    # 拦截活塞推动判定
-    │       └── DustBagBlockMixin.java      # 集尘袋右键交互 + 属性注册
+    │       ├── BlockStateBaseMixin.java  # 拦截活塞推动判定
+    │       ├── DustBagBlockMixin.java    # 集尘袋上蜡/清洗交互
+    │       ├── ItemStackMixin.java       # 集尘袋堆叠限制
+    │       └── SignBlockMixin.java       # 告示牌清洗
     └── resources/
         ├── fabric.mod.json
         ├── hearthtech.mixins.json
         └── assets/hearthtech/lang/
-            ├── zh_cn.json
-            └── en_us.json
 ```
 
 ### 核心机制
 
-#### 发射器行为
-
-通过原版 `DispenserBlock.registerBehavior()` API 注册。发射器逻辑会先检查目标方块是否符合条件，符合则消耗物品并触发效果，不符合则走默认物品射出逻辑。
-
-#### 集尘袋活塞状态
-
-- **方块状态属性**：通过 Mixin 向 `DustBagBlock` 的 `StateDefinition` 注入 `piston_state` 属性（0-3），状态随方块存储，无需 NBT。
-- **活塞推动拦截**：通过 Mixin `BlockStateBase.getPistonPushReaction()` 方法，对 `DustBagBlock` 实例根据 `piston_state` 返回对应的 `PushReaction`。
-- **右键交互**：通过 Mixin 注入 `DustBagBlock.useItemOn()` 头部，检查手持物品并优先处理状态修改（蜜蜡/水瓶/草木灰），其他物品走原逻辑（打开 GUI）。
+- **发射器**：原版 `DispenserBlock.registerBehavior()` API，草木灰优先催熟、其次淘金
+- **活塞**：Mixin `BlockStateBase.getPistonPushReaction()`，集尘袋默认 `DESTROY`，上蜡后 `BLOCK`
+- **堆叠**：Mixin `ItemStack.getMaxStackSize()`，有 `BlockEntityData` 时限制为 1
+- **告示牌**：Mixin `SignBlock.useItemOn()`，通过 `SignBlockEntity` 清除 waxed/glowing
 
 ---
 
