@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "level=1": { "model": "hearth:block/cleansing_cauldron" },
+    "level=2": { "model": "hearth:block/cleansing_cauldron" },
+    "level=3": { "model": "hearth:block/cleansing_cauldron" }
+  }
+}

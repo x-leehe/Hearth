@@ -1,0 +1,15 @@
+{
+	"item.hearth.wood_ash": "Wood Ash",
+	"item.hearth.slag": "Slag",
+	"block.hearth.dust_bag": "Dust Bag",
+	"container.hearth.dust_bag": "Dust Bag",
+	"subtitles.hearth.wood_ash_shovel": "Shovel Wood Ash",
+	"effect.hearth.cleansing": "Cleansing",
+	"item.minecraft.potion.effect.cleansing": "Potion of Cleansing",
+	"item.minecraft.splash_potion.effect.cleansing": "Splash Potion of Cleansing",
+	"item.minecraft.lingering_potion.effect.cleansing": "Lingering Potion of Cleansing",
+	"item.minecraft.potion.effect.long_cleansing": "Potion of Cleansing",
+	"item.minecraft.potion.effect.strong_cleansing": "Potion of Cleansing",
+	"block.hearth.cleansing_cauldron": "Cleansing Cauldron",
+	"block.hearth.potion_cauldron": "Potion-Filled Cauldron"
+}

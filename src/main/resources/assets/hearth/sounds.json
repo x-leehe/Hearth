@@ -1,0 +1,8 @@
+{
+  "wood_ash_shovel": {
+    "subtitle": "subtitles.hearth.wood_ash_shovel",
+    "sounds": [
+      "hearth:wood_ash.shovel"
+    ]
+  }
+}

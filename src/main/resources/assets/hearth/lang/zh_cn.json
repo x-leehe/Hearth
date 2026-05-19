@@ -1,0 +1,15 @@
+{
+	"item.hearth.wood_ash": "草木灰",
+	"item.hearth.slag": "炉渣",
+	"block.hearth.dust_bag": "集尘袋",
+	"container.hearth.dust_bag": "集尘袋",
+	"subtitles.hearth.wood_ash_shovel": "铲取草木灰",
+	"effect.hearth.cleansing": "荡涤",
+	"item.minecraft.potion.effect.cleansing": "荡涤药水",
+	"item.minecraft.splash_potion.effect.cleansing": "喷溅型荡涤药水",
+	"item.minecraft.lingering_potion.effect.cleansing": "滞留型荡涤药水",
+	"item.minecraft.potion.effect.long_cleansing": "荡涤药水",
+	"item.minecraft.potion.effect.strong_cleansing": "荡涤药水",
+	"block.hearth.cleansing_cauldron": "荡涤药水炼药锅",
+	"block.hearth.potion_cauldron": "填药炼药锅"
+}

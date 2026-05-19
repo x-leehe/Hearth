@@ -1,0 +1,43 @@
+{
+	"schemaVersion": 1,
+	"id": "hearth",
+	"version": "0.0.1",
+	"name": "Hearth",
+	"description": "Where there's smoke, there's a hearth; Where there's a hearth, there's a heart.",
+	"authors": [
+		"X-LeeHe",
+		"Awp0rtuh1ty",
+		"bentianjia"
+	],
+	"contact": {
+		"homepage": "https://fabricmc.net/",
+		"sources": "https://github.com/FabricMC/fabric-example-mod"
+	},
+	"license": "CC0-1.0",
+	"icon": "assets/hearth/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"org.awp0rtuh1ty.hearth.Hearth"
+		],
+		"client": [
+			"org.awp0rtuh1ty.hearth.client.HearthClient"
+		],
+		"fabric-datagen": [
+			"org.awp0rtuh1ty.hearth.client.HearthDataGenerator"
+		]
+	},
+	"mixins": [
+		"hearth.mixins.json",
+		{
+			"config": "hearth.client.mixins.json",
+			"environment": "client"
+		}
+	],
+	"depends": {
+		"fabricloader": ">=0.19.2",
+		"minecraft": "~1.21.1",
+		"java": ">=21",
+		"fabric-api": "*"
+	}
+}

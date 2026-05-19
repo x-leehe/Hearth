@@ -1,0 +1,23 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "ABA",
+        "ACA",
+        "AAA"
+    ],
+    "key": {
+        "B": {
+            "item": "minecraft:hopper"
+        },
+        "C": {
+            "item": "minecraft:chest"
+        },
+        "A": {
+            "item": "minecraft:leather"
+        }
+    },
+    "result": {
+        "id": "hearth:dust_bag",
+        "count": 1
+    }
+}

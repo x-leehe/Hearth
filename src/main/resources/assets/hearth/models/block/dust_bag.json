@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "particle": "hearth:block/dust_bag_side",
+    "down": "hearth:block/dust_bag_side",
+    "up": "hearth:block/dust_bag_top",
+    "north": "hearth:block/dust_bag_front",
+    "south": "hearth:block/dust_bag_side",
+    "east": "hearth:block/dust_bag_side",
+    "west": "hearth:block/dust_bag_side"
+  }
+}

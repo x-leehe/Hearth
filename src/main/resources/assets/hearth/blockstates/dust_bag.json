@@ -1,0 +1,8 @@
+{
+  "variants": {
+    "facing=north": { "model": "hearth:block/dust_bag" },
+    "facing=east": { "model": "hearth:block/dust_bag", "y": 90 },
+    "facing=south": { "model": "hearth:block/dust_bag", "y": 180 },
+    "facing=west": { "model": "hearth:block/dust_bag", "y": 270 }
+  }
+}

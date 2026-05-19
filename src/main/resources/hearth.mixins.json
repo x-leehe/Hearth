@@ -1,0 +1,18 @@
+{
+	"required": true,
+	"package": "org.awp0rtuh1ty.hearth.mixin",
+	"compatibilityLevel": "JAVA_21",
+	"mixins": [
+		"AbstractFurnaceBlockEntityMixin",
+		"AbstractFurnaceBlockMixin",
+		"AreaEffectCloudMixin",
+		"LivingEntityMixin",
+		"ThrownPotionMixin"
+	],
+	"injectors": {
+		"defaultRequire": 1
+	},
+	"overwrites": {
+		"requireAnnotations": true
+	}
+}
