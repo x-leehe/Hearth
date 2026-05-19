@@ -1,0 +1,34 @@
+{
+    "schemaVersion": 1,
+    "id": "hearthtech",
+    "version": "${version}",
+    "name": "Hearth Tech",
+    "description": "Hearth 生电扩展 — 为草木灰模组添加自动化/漏斗/发射器/活塞等生电兼容功能",
+    "authors": [
+        "X-LeeHe",
+        "Awp0rtuh1ty",
+        "bentianjia"
+    ],
+    "contact": {
+        "homepage": "https://github.com/x-leehe/Hearth",
+        "sources": "https://github.com/x-leehe/Hearth/tree/tech"
+    },
+    "license": "CC0-1.0",
+    "icon": "assets/hearthtech/icon.png",
+    "environment": "*",
+    "entrypoints": {
+        "main": [
+            "org.awp0rtuh1ty.hearthtech.HearthTech"
+        ]
+    },
+    "mixins": [
+        "hearthtech.mixins.json"
+    ],
+    "depends": {
+        "fabricloader": ">=0.19.2",
+        "minecraft": "~1.21.1",
+        "java": ">=21",
+        "fabric-api": "*",
+        "hearth": ">=1.0.0"
+    }
+}
