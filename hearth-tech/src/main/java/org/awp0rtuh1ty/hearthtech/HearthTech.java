@@ -57,18 +57,8 @@ public class HearthTech implements ModInitializer {
                     && bonemealable.isValidBonemealTarget(level, targetPos, targetState)) {
 
                 if (level instanceof ServerLevel serverLevel) {
-                    if (targetState.getBlock() instanceof CropBlock crop) {
-                        if (!crop.isMaxAge(targetState)) {
-                            level.setBlock(targetPos,
-                                    targetState.setValue(CropBlock.AGE, crop.getMaxAge()), 2);
-                            level.levelEvent(2005, targetPos, 0);
-                            level.gameEvent(null, GameEvent.BLOCK_CHANGE, targetPos);
-                        }
-                    } else {
-                        bonemealable.performBonemeal(serverLevel,
-                                serverLevel.getRandom(), targetPos, targetState);
-                        level.levelEvent(2005, targetPos, 0);
-                    }
+                    bonemealable.performBonemeal(serverLevel,
+                            serverLevel.getRandom(), targetPos, targetState);
                 }
 
                 level.playSound(null, targetPos, SoundEvents.BONE_MEAL_USE,

@@ -1,11 +1,11 @@
-# Hearth Tech（炉·生电扩展）
+# Hearth Tech (炉 生电扩展)
 
 [![Minecraft](https://img.shields.io/badge/Minecraft-1.21.1-brightgreen)](https://www.minecraft.net/)
 [![Fabric](https://img.shields.io/badge/Fabric-0.19.2+-blue)](https://fabricmc.net/)
 
-> 依赖模组：[Hearth（草木灰）](https://github.com/x-leehe/Hearth)
+> 依赖模组: [Hearth (草木灰)](https://github.com/x-leehe/Hearth)
 
-Hearth Tech 是 **Hearth（草木灰）模组**的生电扩展，为原模组的草木灰、炉渣、集尘袋等物品方块添加自动化/发射器/活塞兼容功能。
+Hearth Tech 是 Hearth (草木灰) 模组的生电扩展, 为原模组的草木灰/炉渣/集尘袋等添加自动化/发射器/活塞兼容功能.
 
 ---
 
@@ -13,58 +13,64 @@ Hearth Tech 是 **Hearth（草木灰）模组**的生电扩展，为原模组的
 
 ### 1. 发射器兼容
 
-#### 发射器使用草木灰 → 催熟作物
+#### 发射器使用草木灰 -> 催熟作物
 
-遵循**原版骨粉**的发射器行为。将草木灰放入发射器，发射器会对前方可催熟的作物直接催熟至成熟。不可催熟则作为物品射出。
+遵循原版骨粉发射器行为. 将草木灰放入发射器, 对前方可催熟方块执行 `performBonemeal` 原版骨粉逻辑. 不可催熟则作为物品射出.
 
-#### 发射器使用炉渣 → 水炼药锅淘金
+#### 发射器使用炉渣 -> 水炼药锅淘金
 
-将炉渣放入发射器：
-- **前方为水炼药锅** → 消耗炉渣，产物（1~9 个随机粒）沿发射器朝向射出，**不消耗炼药锅水位**
-- **其他方块** → 作为物品射出
+将炉渣放入发射器:
+- 前方为水炼药锅 -> 消耗炉渣, 产物 (1~9 个随机粒) 沿发射器朝向射出, 不消耗炼药锅水位
+- 其他方块 -> 作为物品射出
 
-### 2. 集尘袋活塞/堆叠机制
+### 2. 集尘袋活塞机制
 
-> **仅玩家右键有效**，发射器/投掷器无法触发。
+> 仅玩家右键有效, 发射器/投掷器无法触发.
 
-| 状态 | 活塞行为 | 物品堆叠 |
-|------|----------|----------|
-| 默认（放置后） | **可推动破坏**（类似潜影盒） | 含物品时最大堆叠 **1**，空袋可堆叠 **64** |
-| 蜜脾上蜡 | **不可推动** | 不变 |
-| 荡涤药水清洗 | **恢复默认**（可推破坏） | 不变 |
+| 手持物品 | piston_state | 活塞行为 | 说明 |
+|----------|-------------|----------|------|
+| 无 (默认) | 0 DEFAULT | 可推动破坏并掉落 | 类似潜影盒, 掉落保留内部物品 NBT |
+| 蜜脾 | 1 MOVABLE_NO_DROP | 可推动不掉落 | 活塞移动, 内部物品不丢失 |
+| 水瓶 | 0 DEFAULT | 恢复默认 | 消耗水瓶, 返还玻璃瓶 |
+| 草木灰 | 2 BLOCK | 不可推动 | 消耗 1 个草木灰 |
 
-- **蜜脾右键** → 上蜡，播放上蜡音效（参考告示牌上蜡）
-- **荡涤药水右键** → 清洗恢复默认，消耗药水返还空玻璃瓶
+### 3. 集尘袋堆叠
 
-### 3. 告示牌清洗
+- 没有任何内部物品的集尘袋: 最大堆叠 64
+- 含有任意内部物品的集尘袋: 最大堆叠 1 (不可堆叠)
 
-> **仅玩家右键有效**，仅普通荡涤药水，**不实现**喷溅/滞留型。
+### 4. 告示牌清洗
 
-手持荡涤药水右键告示牌，同时清除：
-- **上蜡状态**（蜂蜜涂蜡）
-- **荧光效果**（荧光墨囊涂色）
+> 仅玩家右键有效, 仅普通荡涤药水 (喷溅/滞留型不实现).
 
-消耗药水，返还空玻璃瓶。
+手持荡涤药水右键告示牌, 同时清除:
+- 上蜡状态 (蜂蜜涂蜡)
+- 发光文字状态 (荧光墨囊)
+
+消耗药水, 返还空玻璃瓶.
 
 ---
 
 ## 安装
 
-### 前置要求
-
-- Minecraft **1.21.1**
-- Fabric Loader **>= 0.19.2**
+- Minecraft 1.21.1
+- Fabric Loader >= 0.19.2
 - Fabric API
-- **Hearth（草木灰）模组 >= 1.0.0**
+- Hearth (草木灰) 模组 >= 1.0.0
 
 ### 构建
 
 ```bash
-./gradlew :build -x test           # 先构建主模组
-./gradlew :hearth-tech:build -x test  # 构建生电扩展
+# 先构建主模组
+./gradlew :build -x test
+
+# 再构建生电扩展
+./gradlew :hearth-tech:build -x test
 ```
 
-构建产物位于 `hearth-tech/build/libs/hearth-tech-1.0.0.jar`。
+构建产物位于 `hearth-tech/build/libs/hearth-tech-1.0.0.jar`.
+
+将 `build/libs/hearth-1.0.0.jar` 和 `hearth-tech/build/libs/hearth-tech-1.0.0.jar` 放入 mods 文件夹.
 
 ---
 
@@ -74,31 +80,31 @@ Hearth Tech 是 **Hearth（草木灰）模组**的生电扩展，为原模组的
 
 ```
 hearth-tech/
-├── build.gradle.kts
-└── src/main/
-    ├── java/.../hearthtech/
-    │   ├── HearthTech.java              # 主入口（发射器行为注册）
-    │   ├── HearthTechProperties.java    # 共享方块属性（WAXED）
-    │   └── mixin/
-    │       ├── BlockStateBaseMixin.java  # 拦截活塞推动判定
-    │       ├── DustBagBlockMixin.java    # 集尘袋上蜡/清洗交互
-    │       ├── ItemStackMixin.java       # 集尘袋堆叠限制
-    │       └── SignBlockMixin.java       # 告示牌清洗
-    └── resources/
-        ├── fabric.mod.json
-        ├── hearthtech.mixins.json
-        └── assets/hearthtech/lang/
+  build.gradle.kts
+  src/main/
+    java/.../hearthtech/
+      HearthTech.java              主入口 (发射器行为注册)
+      HearthTechProperties.java    共享方块属性 (PISTON_STATE)
+      mixin/
+        BlockStateBaseMixin.java   拦截活塞推动判定
+        DustBagBlockMixin.java     集尘袋右键状态切换
+        ItemStackMixin.java        集尘袋堆叠限制
+        SignBlockMixin.java        告示牌清洗
+    resources/
+      fabric.mod.json
+      hearthtech.mixins.json
+      assets/hearthtech/lang/
 ```
 
 ### 核心机制
 
-- **发射器**：原版 `DispenserBlock.registerBehavior()` API，草木灰催熟，炉渣淘金（不耗水位，产物沿朝向射出）
-- **活塞**：Mixin `BlockStateBase.getPistonPushReaction()`，集尘袋默认 `DESTROY`，上蜡后 `BLOCK`
-- **堆叠**：Mixin `ItemStack.getMaxStackSize()`，有 `BlockEntityData` 时限制为 1
-- **告示牌**：Mixin `SignBlock.useItemOn()`，通过 `SignBlockEntity` 清除 waxed/glowing
+- 发射器: 原版 `DispenserBlock.registerBehavior()` API; 草木灰走 `performBonemeal` 骨粉逻辑; 炉渣淘金不耗水, 产物沿发射器朝向射出
+- 活塞: Mixin `BlockStateBase.getPistonPushReaction()`, 集尘袋三态 -> DESTROY / NORMAL / BLOCK
+- 堆叠: Mixin `ItemStack.getMaxStackSize()`, 检查 BlockEntityData.Items 列表是否实际含物品
+- 告示牌: Mixin `SignBlock.useItemOn()`, 通过 SignBlockEntity 清除 waxed/glowing
 
 ---
 
 ## 许可证
 
-CC0-1.0 — 同 Hearth 主模组。
+CC0-1.0
