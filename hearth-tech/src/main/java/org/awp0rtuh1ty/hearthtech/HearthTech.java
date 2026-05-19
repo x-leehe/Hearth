@@ -77,13 +77,7 @@ public class HearthTech implements ModInitializer {
                 return stack;
             }
 
-            // 不可催熟 → 尝试水炼药锅淘金
-            if (tryGoldPanning(level, targetPos, targetState)) {
-                stack.shrink(1);
-                return stack;
-            }
-
-            // 都不行 → 射出物品
+            // 不可催熟 → 射出物品
             return defaultDispense(source, stack);
         });
     }
@@ -97,10 +91,7 @@ public class HearthTech implements ModInitializer {
             BlockPos targetPos = source.pos().relative(source.state().getValue(DispenserBlock.FACING));
             BlockState targetState = level.getBlockState(targetPos);
 
-            if (!targetState.is(Blocks.WATER_CAULDRON)) {
-                return defaultDispense(source, stack);
-            }
-            if (!tryGoldPanning(level, targetPos, targetState)) {
+            if (!tryGoldPanning(source, targetState)) {
                 return defaultDispense(source, stack);
             }
             stack.shrink(1);
@@ -109,20 +100,18 @@ public class HearthTech implements ModInitializer {
     }
 
     /**
-     * 对水炼药锅执行淘金，返回是否成功
+     * 发射器对水炼药锅淘金（不消耗水位，产物沿发射器朝向射出）
      */
-    private static boolean tryGoldPanning(Level level, BlockPos targetPos, BlockState targetState) {
+    private static boolean tryGoldPanning(net.minecraft.core.dispenser.BlockSource source, BlockState targetState) {
         if (!targetState.is(Blocks.WATER_CAULDRON)) {
             return false;
         }
-        int waterLevel = targetState.getValue(LayeredCauldronBlock.LEVEL);
-        if (waterLevel <= 0) {
+        if (targetState.getValue(LayeredCauldronBlock.LEVEL) <= 0) {
             return false;
         }
 
+        Level level = source.level();
         if (level instanceof ServerLevel serverLevel) {
-            LayeredCauldronBlock.lowerFillLevel(targetState, level, targetPos);
-
             List<Item> nuggetItems = new ArrayList<>();
             BuiltInRegistries.ITEM.getTagOrEmpty(NUGGETS_TAG).forEach(holder -> {
                 nuggetItems.add(holder.value());
@@ -132,17 +121,12 @@ public class HearthTech implements ModInitializer {
                 int count = serverLevel.getRandom().nextInt(1, 10);
                 Item randomNugget = nuggetItems.get(serverLevel.getRandom().nextInt(nuggetItems.size()));
                 ItemStack result = new ItemStack(randomNugget, count);
-
-                ItemEntity itemEntity = new ItemEntity(
-                        level,
-                        targetPos.getX() + 0.5,
-                        targetPos.getY() + 1.0,
-                        targetPos.getZ() + 0.5,
-                        result);
-                itemEntity.setDefaultPickUpDelay();
-                level.addFreshEntity(itemEntity);
+                net.minecraft.core.Direction facing = source.state().getValue(DispenserBlock.FACING);
+                BlockPos targetPos = source.pos().relative(facing);
+                spawnItem(level, result, 6, facing, targetPos);
             }
 
+            BlockPos targetPos = source.pos().relative(source.state().getValue(DispenserBlock.FACING));
             level.playSound(null, targetPos, SoundEvents.GENERIC_SPLASH,
                     SoundSource.BLOCKS, 1.0F, 1.0F);
             level.gameEvent(null, GameEvent.FLUID_PICKUP, targetPos);

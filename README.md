@@ -36,8 +36,8 @@ Hearth is a Fabric mod for Minecraft 1.21.1 that adds furnace byproducts and cle
 
 | Feature | Description |
 |---------|-------------|
-| **Dispenser + Wood Ash** | Dispensers can use Wood Ash to fertilize crops. If facing a Water Cauldron, triggers gold panning (1-9 random nuggets). |
-| **Dispenser + Slag** | Dispensers can use Slag on Water Cauldrons to automate nugget extraction. |
+| **Dispenser + Wood Ash** | Dispensers can use Wood Ash to fertilize crops (follows vanilla bonemeal behavior). |
+| **Dispenser + Slag** | Dispensers can use Slag on Water Cauldrons to extract nuggets. Items eject in the dispenser's facing direction, water level is NOT consumed. |
 | **Dust Bag Piston State** | Default: piston-breakable with item drop (like shulker). Right-click with **Honeycomb** → waxed (piston-immune). Right-click with **Cleansing Potion** → restores default. *Player-only.* |
 | **Dust Bag Stacking** | Dust Bags with items inside cannot stack (max 1). Empty Dust Bags stack up to 64. |
 | **Sign Cleansing** | Right-click a sign with Cleansing Potion to remove waxed and glowing states. *Player-only, splash/lingering not implemented.* |
@@ -98,8 +98,8 @@ Hearth（炉）是一个 Fabric 1.21.1 模组，为原版熔炉添加副产物�
 
 | 功能 | 说明 |
 |------|------|
-| **发射器 + 草木灰** | 发射器可自动使用草木灰催熟作物；面对水炼药锅时触发淘金（1~9 随机粒）。 |
-| **发射器 + 炉渣** | 发射器可用炉渣对水炼药锅自动淘金。 |
+| **发射器 + 草木灰** | 发射器可自动使用草木灰催熟作物（遵循原版骨粉发射器行为）。 |
+| **发射器 + 炉渣** | 发射器可用炉渣对水炼药锅自动淘金，产物沿发射器朝向射出，不消耗炼药锅水位。 |
 | **集尘袋活塞状态** | 默认：活塞可推破坏（类似潜影盒）。**蜜脾**右键 → 上蜡（活塞不可推）。**荡涤药水**右键 → 恢复默认。*仅玩家可触发。* |
 | **集尘袋堆叠** | 含物品的集尘袋不可堆叠（最大1）；空袋可堆叠至 64。 |
 | **告示牌清洗** | 荡涤药水右键告示牌，洗去上蜡状态和荧光效果。*仅玩家可触发，不实现喷溅/滞留型。* |
