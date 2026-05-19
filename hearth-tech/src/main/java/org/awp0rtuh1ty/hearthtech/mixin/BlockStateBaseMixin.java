@@ -12,10 +12,9 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 /**
- * Override piston push reaction for Dust Bags based on piston_state.
- * 0 DEFAULT  -> DESTROY  (push breaks, drops with NBT)
- * 1 WAXED    -> NORMAL   (push moves, preserves contents)
- * 2 STICKY   -> BLOCK    (push blocked)
+ * Dust Bag piston push reaction:
+ * - default (waxed=false) -> DESTROY  (piston destroys, drops with NBT)
+ * - waxed (waxed=true)   -> BLOCK    (piston cannot push, player can still break)
  */
 @Mixin(BlockBehaviour.BlockStateBase.class)
 public abstract class BlockStateBaseMixin {
@@ -27,15 +26,10 @@ public abstract class BlockStateBaseMixin {
         if (!(block instanceof DustBagBlock)) {
             return;
         }
-        if (!state.hasProperty(HearthTechProperties.PISTON_STATE)) {
+        if (!state.hasProperty(HearthTechProperties.WAXED)) {
             return;
         }
-        int mode = state.getValue(HearthTechProperties.PISTON_STATE);
-        PushReaction reaction = switch (mode) {
-            case 1 -> PushReaction.NORMAL;
-            case 2 -> PushReaction.BLOCK;
-            default -> PushReaction.DESTROY;
-        };
-        cir.setReturnValue(reaction);
+        boolean waxed = state.getValue(HearthTechProperties.WAXED);
+        cir.setReturnValue(waxed ? PushReaction.BLOCK : PushReaction.DESTROY);
     }
 }

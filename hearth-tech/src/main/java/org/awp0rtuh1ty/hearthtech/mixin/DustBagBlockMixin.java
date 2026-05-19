@@ -1,6 +1,7 @@
 package org.awp0rtuh1ty.hearthtech.mixin;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -9,6 +10,7 @@ import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -17,6 +19,7 @@ import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.BlockHitResult;
 import org.awp0rtuh1ty.hearth.WoodAsh;
 import org.awp0rtuh1ty.hearth.block.DustBagBlock;
+import org.awp0rtuh1ty.hearth.potion.CleansingPotions;
 import org.awp0rtuh1ty.hearthtech.HearthTechProperties;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -26,9 +29,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 /**
  * Dust Bag right-click state switching (player-only).
- * - Honeycomb   -> piston_state=1  piston moves, no drop
- * - Water bottle -> piston_state=0  restore default (piston destroys, drops with NBT)
- * - Wood ash    -> piston_state=2  piston blocked
+ * - Honeycomb   -> waxed=true   piston blocked
+ * - Wood ash    -> waxed=true   piston blocked (alternative)
+ * - Cleansing potion -> waxed=false  restore default (returns glass bottle)
  */
 @Mixin(DustBagBlock.class)
 public abstract class DustBagBlockMixin extends Block {
@@ -38,19 +41,19 @@ public abstract class DustBagBlockMixin extends Block {
     }
 
     @Inject(method = "createBlockStateDefinition", at = @At("TAIL"))
-    private void hearthtech$addPistonStateProperty(StateDefinition.Builder<Block, BlockState> builder, CallbackInfo ci) {
-        builder.add(HearthTechProperties.PISTON_STATE);
+    private void hearthtech$addWaxedProperty(StateDefinition.Builder<Block, BlockState> builder, CallbackInfo ci) {
+        builder.add(HearthTechProperties.WAXED);
     }
 
     @Inject(method = "getStateForPlacement", at = @At("RETURN"), cancellable = true)
-    private void hearthtech$setDefaultPistonState(
+    private void hearthtech$setDefaultWaxed(
             net.minecraft.world.item.context.BlockPlaceContext ctx,
             CallbackInfoReturnable<BlockState> cir) {
-        cir.setReturnValue(cir.getReturnValue().setValue(HearthTechProperties.PISTON_STATE, 0));
+        cir.setReturnValue(cir.getReturnValue().setValue(HearthTechProperties.WAXED, false));
     }
 
     @Inject(method = "useItemOn", at = @At("HEAD"), cancellable = true)
-    private void hearthtech$switchPistonState(
+    private void hearthtech$switchWaxedState(
             ItemStack stack, BlockState state, Level level, BlockPos pos,
             Player player, InteractionHand hand, BlockHitResult hit,
             CallbackInfoReturnable<ItemInteractionResult> cir) {
@@ -58,27 +61,27 @@ public abstract class DustBagBlockMixin extends Block {
             return;
         }
 
-        int newState;
+        boolean wax;
         SoundEvent sound;
         float pitch;
 
         if (stack.is(Items.HONEYCOMB)) {
-            newState = 1;
+            wax = true;
             sound = SoundEvents.HONEYCOMB_WAX_ON;
             pitch = 1.0F;
-        } else if (stack.is(Items.POTION)) {
-            newState = 0;
-            sound = SoundEvents.BOTTLE_EMPTY;
-            pitch = 1.0F;
         } else if (stack.is(WoodAsh.WOOD_ASH)) {
-            newState = 2;
+            wax = true;
             sound = SoundEvents.SAND_PLACE;
             pitch = 0.8F;
+        } else if (stack.is(Items.POTION) && isCleansingPotion(stack)) {
+            wax = false;
+            sound = SoundEvents.BOTTLE_EMPTY;
+            pitch = 1.0F;
         } else {
             return;
         }
 
-        level.setBlock(pos, state.setValue(HearthTechProperties.PISTON_STATE, newState), 3);
+        level.setBlock(pos, state.setValue(HearthTechProperties.WAXED, wax), 3);
 
         if (stack.is(Items.POTION)) {
             stack.shrink(1);
@@ -99,5 +102,12 @@ public abstract class DustBagBlockMixin extends Block {
         level.gameEvent(player, GameEvent.BLOCK_CHANGE, pos);
 
         cir.setReturnValue(ItemInteractionResult.sidedSuccess(false));
+    }
+
+    private static boolean isCleansingPotion(ItemStack stack) {
+        PotionContents contents = stack.getOrDefault(DataComponents.POTION_CONTENTS, PotionContents.EMPTY);
+        return contents.is(CleansingPotions.CLEANSING)
+                || contents.is(CleansingPotions.LONG_CLEANSING)
+                || contents.is(CleansingPotions.STRONG_CLEANSING);
     }
 }

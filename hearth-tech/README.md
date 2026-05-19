@@ -25,14 +25,14 @@ Hearth Tech 是 Hearth (草木灰) 模组的生电扩展, 为原模组的草木�
 
 ### 2. 集尘袋活塞机制
 
-> 仅玩家右键有效, 发射器/投掷器无法触发.
+> 仅玩家右键有效, 发射器/投掷器无法触发. 玩家始终可以敲掉集尘袋.
 
-| 手持物品 | piston_state | 活塞行为 | 说明 |
-|----------|-------------|----------|------|
-| 无 (默认) | 0 DEFAULT | 可推动破坏并掉落 | 类似潜影盒, 掉落保留内部物品 NBT |
-| 蜜脾 | 1 MOVABLE_NO_DROP | 可推动不掉落 | 活塞移动, 内部物品不丢失 |
-| 水瓶 | 0 DEFAULT | 恢复默认 | 消耗水瓶, 返还玻璃瓶 |
-| 草木灰 | 2 BLOCK | 不可推动 | 消耗 1 个草木灰 |
+| 手持物品 | 状态 | 活塞行为 |
+|----------|------|----------|
+| 无 (默认) | 未涂蜡 | 活塞可推破坏, 掉落保留 NBT |
+| 蜜脾 | 涂蜡 | 活塞不可推 |
+| 草木灰 | 涂蜡 | 活塞不可推 |
+| 荡涤药水 | 恢复默认 | 活塞可推破坏, 返还玻璃瓶 |
 
 ### 3. 集尘袋堆叠
 
@@ -99,7 +99,7 @@ hearth-tech/
 ### 核心机制
 
 - 发射器: 原版 `DispenserBlock.registerBehavior()` API; 草木灰走 `performBonemeal` 骨粉逻辑; 炉渣淘金不耗水, 产物沿发射器朝向射出
-- 活塞: Mixin `BlockStateBase.getPistonPushReaction()`, 集尘袋三态 -> DESTROY / NORMAL / BLOCK
+- 活塞: Mixin `BlockStateBase.getPistonPushReaction()`, 涂蜡 -> BLOCK, 默认 -> DESTROY
 - 堆叠: Mixin `ItemStack.getMaxStackSize()`, 检查 BlockEntityData.Items 列表是否实际含物品
 - 告示牌: Mixin `SignBlock.useItemOn()`, 通过 SignBlockEntity 清除 waxed/glowing
 

@@ -38,7 +38,7 @@ Hearth is a Fabric mod for Minecraft 1.21.1 that adds furnace byproducts and cle
 |---------|-------------|
 | **Dispenser + Wood Ash** | Dispensers can use Wood Ash to fertilize crops (vanilla `performBonemeal` logic). Does NOT do gold panning. |
 | **Dispenser + Slag** | Dispensers can use Slag on Water Cauldrons to extract nuggets (1-9). Items eject in dispenser facing direction; water level NOT consumed. |
-| **Dust Bag Piston State** | Default: piston-breakable, drops with NBT (like shulker). **Honeycomb** → piston-movable, no drop. **Water Bottle** → restores default. **Wood Ash** → piston-blocked. *Player-only.* |
+| **Dust Bag Piston State** | Default: piston destroys, drops with NBT. **Honeycomb** or **Wood Ash** → waxed, piston blocked, player can still break. **Cleansing Potion** → restores default. *Player-only.* |
 | **Dust Bag Stacking** | Empty bags stack to 64. Bags with any items inside max stack 1. |
 | **Sign Cleansing** | Cleansing Potion on sign removes waxed + glowing text states. *Player-only, splash/lingering not implemented.* |
 
@@ -100,7 +100,7 @@ Hearth（炉）是一个 Fabric 1.21.1 模组，为原版熔炉添加副产物�
 |------|------|
 | **发射器 + 草木灰** | 发射器可自动使用草木灰催熟作物（原版 `performBonemeal` 骨粉逻辑）。不可淘金。 |
 | **发射器 + 炉渣** | 发射器可用炉渣对水炼药锅自动淘金（1~9 随机粒），产物沿发射器朝向射出，不消耗水位。 |
-| **集尘袋活塞状态** | 默认：活塞可推破坏，掉落保留 NBT（类似潜影盒）。**蜜脾**右键 → 活塞可推不掉落。**水瓶**右键 → 恢复默认。**草木灰**右键 → 活塞不可推。*仅玩家可触发。* |
+| **集尘袋活塞状态** | 默认：活塞可推破坏，掉落保留 NBT。**蜜脾**或**草木灰**右键 → 涂蜡，活塞不可推，玩家仍可敲掉。**荡涤药水**右键 → 恢复默认。*仅玩家可触发。* |
 | **集尘袋堆叠** | 空袋可堆叠至 64；含任意物品最大堆叠 1。 |
 | **告示牌清洗** | 荡涤药水右键告示牌，洗去上蜡状态和荧光效果。*仅玩家可触发，不实现喷溅/滞留型。* |
 
