@@ -31,45 +31,32 @@ Hearth is a Fabric mod for Minecraft 1.21.1 that adds furnace byproducts and cle
 | **Cleansing Cauldron** | Right-click with dyed items to restore them to their natural color. Convert Rotten Flesh → Leather. |
 | **Potion-Filled Cauldron** | Store any potion in a cauldron for later use. |
 | **Furnace Ash Extraction** | Right-click a furnace with a shovel to collect accumulated ash/slag. |
-
-#### Tech Extension (`hearthtech`)
-
-| Feature | Description |
-|---------|-------------|
 | **Dispenser + Wood Ash** | Dispensers can use Wood Ash to fertilize crops (vanilla `performBonemeal` logic). Does NOT do gold panning. |
 | **Dispenser + Slag** | Dispensers can use Slag on Water Cauldrons to extract nuggets (1-9). Items eject in dispenser facing direction; water level NOT consumed. |
-| **Dust Bag Piston State** | Default: piston destroys, drops with NBT. **Honeycomb** or **Wood Ash** → waxed, piston blocked, player can still break. **Cleansing Potion** → restores default. *Player-only.* |
+| **Dust Bag Piston State** | Default: piston destroys, drops with NBT. **Honeycomb** → waxed, piston blocked, player can still break. **Cleansing Potion** → restores default. *Player-only.* |
 | **Dust Bag Stacking** | Empty bags stack to 64. Bags with any items inside max stack 1. |
 | **Sign Cleansing** | Cleansing Potion on sign removes waxed + glowing text states. *Player-only, splash/lingering not implemented.* |
 
 ### Installation
 
 1. Install **Fabric Loader** and **Fabric API** for Minecraft 1.21.1
-2. Download `hearth-1.0.0.jar` and `hearth-tech-1.0.0.jar`
-3. Place both in your `mods/` folder
+2. Download `hearth-1.0.0.jar`
+3. Place it in your `mods/` folder
 
 ### Build from Source
 
 ```bash
-# Build main mod
-./gradlew :build -x test
-
-# Build tech extension (after main mod is built)
-./gradlew :hearth-tech:build -x test
+./gradlew build -x test
 ```
 
 Outputs:
 - `build/libs/hearth-1.0.0.jar` — Main mod
-- `hearth-tech/build/libs/hearth-tech-1.0.0.jar` — Tech extension
 
 ### Project Structure
 
 ```
 Hearth/
 ├── src/main/           # Main mod source
-├── hearth-tech/        # Tech extension subproject
-│   ├── README.md        # Tech extension docs (Chinese)
-│   └── src/main/        # Extension source
 ├── settings.gradle.kts
 └── build.gradle.kts
 ```
@@ -93,45 +80,32 @@ Hearth（炉）是一个 Fabric 1.21.1 模组，为原版熔炉添加副产物�
 | **荡涤炼药锅** | 右键染色物品还原无色/白色；腐肉→皮革。 |
 | **填药炼药锅** | 将任意药水存入炼药锅，支持装瓶复用。 |
 | **铲取灰烬** | 手持铲子右键熔炉，取出积累的草木灰/炉渣。 |
-
-#### 生电扩展 (`hearthtech`)
-
-| 功能 | 说明 |
-|------|------|
 | **发射器 + 草木灰** | 发射器可自动使用草木灰催熟作物（原版 `performBonemeal` 骨粉逻辑）。不可淘金。 |
 | **发射器 + 炉渣** | 发射器可用炉渣对水炼药锅自动淘金（1~9 随机粒），产物沿发射器朝向射出，不消耗水位。 |
-| **集尘袋活塞状态** | 默认：活塞可推破坏，掉落保留 NBT。**蜜脾**或**草木灰**右键 → 涂蜡，活塞不可推，玩家仍可敲掉。**荡涤药水**右键 → 恢复默认。*仅玩家可触发。* |
+| **集尘袋活塞状态** | 默认：活塞可推破坏，掉落保留 NBT。**蜜脾**右键 → 涂蜡，活塞不可推，玩家仍可敲掉。**荡涤药水**右键 → 恢复默认。*仅玩家可触发。* |
 | **集尘袋堆叠** | 空袋可堆叠至 64；含任意物品最大堆叠 1。 |
 | **告示牌清洗** | 荡涤药水右键告示牌，洗去上蜡状态和荧光效果。*仅玩家可触发，不实现喷溅/滞留型。* |
 
 ### 安装
 
 1. 安装 Fabric Loader 和 Fabric API（Minecraft 1.21.1）
-2. 下载 `hearth-1.0.0.jar` 和 `hearth-tech-1.0.0.jar`
+2. 下载 `hearth-1.0.0.jar`
 3. 放入 `mods/` 文件夹
 
 ### 构建
 
 ```bash
-# 先构建主模组
-./gradlew :build -x test
-
-# 再构建生电扩展
-./gradlew :hearth-tech:build -x test
+./gradlew build -x test
 ```
 
 构建产物：
 - `build/libs/hearth-1.0.0.jar` — 主模组
-- `hearth-tech/build/libs/hearth-tech-1.0.0.jar` — 生电扩展
 
 ### 项目结构
 
 ```
 Hearth/
 ├── src/main/           # 主模组源码
-├── hearth-tech/        # 生电扩展子项目
-│   ├── README.md        # 扩展模组详细说明
-│   └── src/main/        # 扩展源码
 ├── settings.gradle.kts
 └── build.gradle.kts
 ```

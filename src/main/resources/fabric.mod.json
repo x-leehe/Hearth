@@ -18,7 +18,8 @@
 	"environment": "*",
 	"entrypoints": {
 		"main": [
-			"org.awp0rtuh1ty.hearth.Hearth"
+			"org.awp0rtuh1ty.hearth.Hearth",
+			"org.awp0rtuh1ty.hearthtech.HearthTech"
 		],
 		"client": [
 			"org.awp0rtuh1ty.hearth.client.HearthClient"
@@ -29,6 +30,7 @@
 	},
 	"mixins": [
 		"hearth.mixins.json",
+		"hearthtech.mixins.json",
 		{
 			"config": "hearth.client.mixins.json",
 			"environment": "client"

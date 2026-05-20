@@ -17,7 +17,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.BlockHitResult;
-import org.awp0rtuh1ty.hearth.WoodAsh;
 import org.awp0rtuh1ty.hearth.block.DustBagBlock;
 import org.awp0rtuh1ty.hearth.potion.CleansingPotions;
 import org.awp0rtuh1ty.hearthtech.HearthTechProperties;
@@ -30,7 +29,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 /**
  * Dust Bag right-click state switching (player-only).
  * - Honeycomb   -> waxed=true   piston blocked
- * - Wood ash    -> waxed=true   piston blocked (alternative)
  * - Cleansing potion -> waxed=false  restore default (returns glass bottle)
  */
 @Mixin(DustBagBlock.class)
@@ -69,10 +67,6 @@ public abstract class DustBagBlockMixin extends Block {
             wax = true;
             sound = SoundEvents.HONEYCOMB_WAX_ON;
             pitch = 1.0F;
-        } else if (stack.is(WoodAsh.WOOD_ASH)) {
-            wax = true;
-            sound = SoundEvents.SAND_PLACE;
-            pitch = 0.8F;
         } else if (stack.is(Items.POTION) && isCleansingPotion(stack)) {
             wax = false;
             sound = SoundEvents.BOTTLE_EMPTY;
