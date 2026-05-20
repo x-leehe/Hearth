@@ -3,7 +3,6 @@ package org.awp0rtuh1ty.hearth.mixin;
 import org.awp0rtuh1ty.hearth.AshStorage;
 import org.awp0rtuh1ty.hearth.HearthLogConfig;
 import org.awp0rtuh1ty.hearth.HearthSounds;
-// import org.awp0rtuh1ty.hearth.WoodAsh;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
