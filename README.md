@@ -4,9 +4,9 @@
 [![Fabric](https://img.shields.io/badge/Fabric-0.19.2+-blue)](https://fabricmc.net/)
 [![License](https://img.shields.io/badge/License-CC0--1.0-lightgrey)](LICENSE)
 
-> Where there's smoke, there's a hearth; Where there's a hearth, there's a heart.
->
-> 有烟必有炉，有炉必有情。
+> 山上层层桃李花，云间烟火是人家。
+> 银钏金钗来负水，长刀短笠去烧畲。
+> <div align="right">——刘禹锡《竹枝词》</div>
 
 ---
 
@@ -31,45 +31,32 @@ Hearth is a Fabric mod for Minecraft 1.21.1 that adds furnace byproducts and cle
 | **Cleansing Cauldron** | Right-click with dyed items to restore them to their natural color. Convert Rotten Flesh → Leather. |
 | **Potion-Filled Cauldron** | Store any potion in a cauldron for later use. |
 | **Furnace Ash Extraction** | Right-click a furnace with a shovel to collect accumulated ash/slag. |
-
-#### Tech Extension (`hearthtech`)
-
-| Feature | Description |
-|---------|-------------|
-| **Dispenser + Wood Ash** | Dispensers can use Wood Ash to fertilize crops (vanilla `performBonemeal` logic). Does NOT do gold panning. |
-| **Dispenser + Slag** | Dispensers can use Slag on Water Cauldrons to extract nuggets (1-9). Items eject in dispenser facing direction; water level NOT consumed. |
-| **Dust Bag Piston State** | Default: piston destroys, drops with NBT. **Honeycomb** or **Wood Ash** → waxed, piston blocked, player can still break. **Cleansing Potion** → restores default. *Player-only.* |
+| **Dispenser + Wood Ash** | Dispensers can use Wood Ash to fertilize crops (vanilla `performBonemeal` logic). |
+| **Dispenser + Slag** | Dispensers can use Slag on Water Cauldrons to extract nuggets (1-9). Items eject in dispenser facing direction. |
+| **Dust Bag Piston State** | Default: piston destroys, drops with NBT. **Honeycomb** or **Wood Ash** → waxed, piston blocked, player can still break. **Cleansing Potion** → restores default. |
 | **Dust Bag Stacking** | Empty bags stack to 64. Bags with any items inside max stack 1. |
-| **Sign Cleansing** | Cleansing Potion on sign removes waxed + glowing text states. *Player-only, splash/lingering not implemented.* |
+| **Sign Cleansing** | Cleansing Potion on sign removes waxed + glowing text states. |
 
 ### Installation
 
 1. Install **Fabric Loader** and **Fabric API** for Minecraft 1.21.1
-2. Download `hearth-1.0.0.jar` and `hearth-tech-1.0.0.jar`
-3. Place both in your `mods/` folder
+2. Download `hearth-1.0.0.jar`
+3. Place it in your `mods/` folder
 
 ### Build from Source
 
 ```bash
-# Build main mod
-./gradlew :build -x test
-
-# Build tech extension (after main mod is built)
-./gradlew :hearth-tech:build -x test
+./gradlew build -x test
 ```
 
 Outputs:
 - `build/libs/hearth-1.0.0.jar` — Main mod
-- `hearth-tech/build/libs/hearth-tech-1.0.0.jar` — Tech extension
 
 ### Project Structure
 
 ```
 Hearth/
 ├── src/main/           # Main mod source
-├── hearth-tech/        # Tech extension subproject
-│   ├── README.md        # Tech extension docs (Chinese)
-│   └── src/main/        # Extension source
 ├── settings.gradle.kts
 └── build.gradle.kts
 ```

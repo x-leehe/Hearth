@@ -1,4 +1,4 @@
-package org.awp0rtuh1ty.hearth;
+package org.awp0rtuh1ty.hearth.item;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;

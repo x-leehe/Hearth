@@ -1,4 +1,4 @@
-package org.awp0rtuh1ty.hearth;
+package org.awp0rtuh1ty.hearth.block;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -7,6 +7,12 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Container;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.MenuProvider;
@@ -25,6 +31,10 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
+import org.awp0rtuh1ty.hearth.DamageTracker;
+import org.awp0rtuh1ty.hearth.HearthConfig;
+import org.awp0rtuh1ty.hearth.HearthSounds;
+import org.awp0rtuh1ty.hearth.Repellent;
 import org.awp0rtuh1ty.hearth.screen.RepellentScreenHandler;
 import org.jetbrains.annotations.Nullable;
 
@@ -41,7 +51,9 @@ public class RepellentBlockEntity extends BlockEntity implements MenuProvider, W
             "hearth:cleansing", "hearth:long_cleansing", "hearth:strong_cleansing");
 
     int remainingTicks;
+    int potionCount;
     String potionVariant; // "normal", "long", "strong"
+    boolean wasPowered;
 
     private final SimpleContainer inventory = new SimpleContainer(INVENTORY_SIZE) {
         @Override
@@ -56,15 +68,47 @@ public class RepellentBlockEntity extends BlockEntity implements MenuProvider, W
     }
 
     public static void serverTick(Level level, BlockPos pos, BlockState state, RepellentBlockEntity be) {
+        // Detect redstone state change and play enable/disable sounds (like beacon)
+        boolean isPowered = level.hasNeighborSignal(pos);
+        if (isPowered != be.wasPowered) {
+            if (isPowered) {
+                level.playSound(null, pos, SoundEvents.BEACON_ACTIVATE, SoundSource.BLOCKS, 1.0F, 1.0F);
+            } else {
+                level.playSound(null, pos, SoundEvents.BEACON_DEACTIVATE, SoundSource.BLOCKS, 1.0F, 1.0F);
+            }
+            be.wasPowered = isPowered;
+        }
+
         // Try to consume fuel from inventory if empty
         if (be.remainingTicks <= 0) {
             be.tryConsumePotion();
         }
 
-        if (!level.hasNeighborSignal(pos)) return;
+        // Periodically refresh potion count for syncing
+        if (level.getGameTime() % 20 == 0) {
+            int count = 0;
+            for (int i = 0; i < INVENTORY_SIZE; i++) {
+                if (isCleansingPotionItem(be.inventory.getItem(i))) {
+                    count++;
+                }
+            }
+            be.potionCount = count;
+        }
+
+        if (!isPowered) return;
         if (be.remainingTicks <= 0) return;
 
         be.remainingTicks--;
+
+        // Sync remaining ticks to clients every second (20 ticks)
+        if (be.remainingTicks % 20 == 0) {
+            ClientboundBlockEntityDataPacket packet = ClientboundBlockEntityDataPacket.create(be);
+            for (Player player : level.players()) {
+                if (player instanceof ServerPlayer sp) {
+                    sp.connection.send(packet);
+                }
+            }
+        }
 
         // Periodic cleanup of stale damage records
         if (be.remainingTicks % 200 == 0) {
@@ -136,6 +180,14 @@ public class RepellentBlockEntity extends BlockEntity implements MenuProvider, W
                 inventory.setItem(i, ItemStack.EMPTY);
             }
             setChanged();
+
+            // Immediately sync new remainingTicks to clients
+            ClientboundBlockEntityDataPacket packet = ClientboundBlockEntityDataPacket.create(this);
+            for (Player player : level.players()) {
+                if (player instanceof ServerPlayer sp) {
+                    sp.connection.send(packet);
+                }
+            }
             return;
         }
     }
@@ -165,6 +217,14 @@ public class RepellentBlockEntity extends BlockEntity implements MenuProvider, W
         return remainingTicks > 0;
     }
 
+    public int getRemainingTicks() {
+        return remainingTicks;
+    }
+
+    public int getPotionCount() {
+        return potionCount;
+    }
+
     public Container getInventory() {
         return inventory;
     }
@@ -188,9 +248,11 @@ public class RepellentBlockEntity extends BlockEntity implements MenuProvider, W
     protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.loadAdditional(tag, registries);
         remainingTicks = tag.getInt("remainingTicks");
+        potionCount = tag.getInt("potionCount");
         if (tag.contains("potionVariant")) {
             potionVariant = tag.getString("potionVariant");
         }
+        wasPowered = tag.getBoolean("wasPowered");
         NonNullList<ItemStack> items = NonNullList.withSize(INVENTORY_SIZE, ItemStack.EMPTY);
         ContainerHelper.loadAllItems(tag, items, registries);
         for (int i = 0; i < items.size(); i++) {
@@ -202,14 +264,33 @@ public class RepellentBlockEntity extends BlockEntity implements MenuProvider, W
     protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.saveAdditional(tag, registries);
         tag.putInt("remainingTicks", remainingTicks);
+        tag.putInt("potionCount", potionCount);
         if (potionVariant != null) {
             tag.putString("potionVariant", potionVariant);
         }
+        tag.putBoolean("wasPowered", wasPowered);
         NonNullList<ItemStack> items = NonNullList.withSize(INVENTORY_SIZE, ItemStack.EMPTY);
         for (int i = 0; i < INVENTORY_SIZE; i++) {
             items.set(i, inventory.getItem(i));
         }
         ContainerHelper.saveAllItems(tag, items, registries);
+    }
+
+    @Override
+    public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
+        CompoundTag tag = super.getUpdateTag(registries);
+        tag.putInt("remainingTicks", remainingTicks);
+        tag.putInt("potionCount", potionCount);
+        if (potionVariant != null) {
+            tag.putString("potionVariant", potionVariant);
+        }
+        return tag;
+    }
+
+    @Nullable
+    @Override
+    public Packet<ClientGamePacketListener> getUpdatePacket() {
+        return ClientboundBlockEntityDataPacket.create(this);
     }
 
     // --- WorldlyContainer (hopper interaction) ---

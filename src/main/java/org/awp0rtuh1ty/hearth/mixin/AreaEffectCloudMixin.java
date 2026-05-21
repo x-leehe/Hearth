@@ -3,6 +3,7 @@ package org.awp0rtuh1ty.hearth.mixin;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -12,6 +13,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.*;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import org.awp0rtuh1ty.hearth.Hearth;
 import org.awp0rtuh1ty.hearth.effect.HearthEffects;
@@ -97,7 +99,19 @@ public abstract class AreaEffectCloudMixin {
                         Block replacement = getUndyedVersion(state.getBlock());
 
                         if (replacement != null && replacement != state.getBlock()) {
+                            // 保存方块实体数据（潜影盒内容、旗帜图案等）
+                            BlockEntity oldBe = level.getBlockEntity(pos);
+                            CompoundTag beTag = null;
+                            if (oldBe != null) {
+                                beTag = oldBe.saveWithFullMetadata(level.registryAccess());
+                            }
                             level.setBlock(pos, replacement.withPropertiesOf(state), 3);
+                            if (beTag != null) {
+                                BlockEntity newBe = level.getBlockEntity(pos);
+                                if (newBe != null) {
+                                    newBe.loadWithComponents(beTag, level.registryAccess());
+                                }
+                            }
                             // 净化粒子效果
                             ((ServerLevel) level).sendParticles(
                                     ParticleTypes.WAX_ON,

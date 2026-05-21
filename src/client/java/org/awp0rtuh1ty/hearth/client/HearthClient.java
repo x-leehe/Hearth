@@ -12,5 +12,6 @@ public class HearthClient implements ClientModInitializer {
     public void onInitializeClient() {
         MenuScreens.register(DustBag.DUST_BAG_SCREEN_HANDLER, DustBagScreen::new);
         MenuScreens.register(Repellent.REPELLENT_SCREEN_HANDLER, RepellentScreen::new);
+        RepellentOverlayRenderer.register();
     }
 }

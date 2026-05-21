@@ -51,7 +51,9 @@ public class CleansingEffect extends MobEffect {
             }
         }
 
-        // 饮用时 -2HP
-        entity.hurt(entity.damageSources().magic(), 2.0F);
+        // 饮用时 -2HP（仅对玩家生效，避免喷溅/滞留药水误伤）
+        if (entity instanceof Player) {
+            entity.hurt(entity.damageSources().magic(), 2.0F);
+        }
     }
 }

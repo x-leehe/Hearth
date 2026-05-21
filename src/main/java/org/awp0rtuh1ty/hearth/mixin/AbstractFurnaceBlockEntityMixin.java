@@ -18,9 +18,12 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.AbstractFurnaceBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -45,6 +48,9 @@ public abstract class AbstractFurnaceBlockEntityMixin implements AshStorage {
     @Unique
     private boolean hearth$penaltyApplied;
 
+    @Unique
+    private int hearth$syncTimer;
+
     @Shadow
     int cookingTotalTime;
 
@@ -58,6 +64,12 @@ public abstract class AbstractFurnaceBlockEntityMixin implements AshStorage {
         }
         if (compoundTag.contains("hearth_ashSlot4", 10)) {
             this.hearth$slot4 = ItemStack.parseOptional(provider, compoundTag.getCompound("hearth_ashSlot4"));
+        }
+        if (compoundTag.contains("hearth_cookingProgress", 3)) {
+            this.cookingProgress = compoundTag.getInt("hearth_cookingProgress");
+        }
+        if (compoundTag.contains("hearth_cookingTotalTime", 3)) {
+            this.cookingTotalTime = compoundTag.getInt("hearth_cookingTotalTime");
         }
     }
 
@@ -78,6 +90,8 @@ public abstract class AbstractFurnaceBlockEntityMixin implements AshStorage {
                 HEARTH_LOGGER.info("[Hearth] Saving slot4: {}", tag);
             }
         }
+        compoundTag.putInt("hearth_cookingProgress", this.cookingProgress);
+        compoundTag.putInt("hearth_cookingTotalTime", this.cookingTotalTime);
     }
 
     @Inject(
@@ -136,6 +150,18 @@ public abstract class AbstractFurnaceBlockEntityMixin implements AshStorage {
         if (mixin.hearth$recipeJustCompleted) {
             mixin.hearth$recipeJustCompleted = false;
             mixin.hearth$penaltyApplied = false;
+        }
+
+        // 每 10 tick 向追踪此区块的客户端直接发送方块实体数据包（sendBlockUpdated 在 state 不变时是 no-op）
+        mixin.hearth$syncTimer++;
+        if (mixin.hearth$syncTimer >= 10) {
+            mixin.hearth$syncTimer = 0;
+            if (level instanceof ServerLevel serverLevel) {
+                ClientboundBlockEntityDataPacket packet = ClientboundBlockEntityDataPacket.create(furnace);
+                serverLevel.getChunkSource().chunkMap
+                        .getPlayers(new ChunkPos(blockPos), false)
+                        .forEach(player -> player.connection.send(packet));
+            }
         }
     }
 
@@ -209,6 +235,31 @@ public abstract class AbstractFurnaceBlockEntityMixin implements AshStorage {
             this.hearth$slot4 = slotStack;
         }
         return amount - toAdd;
+    }
+
+    @Override
+    public ItemStack hearth$getInputStack() {
+        return ((net.minecraft.world.Container) this).getItem(0);
+    }
+
+    @Override
+    public ItemStack hearth$getFuelStack() {
+        return ((net.minecraft.world.Container) this).getItem(1);
+    }
+
+    @Override
+    public ItemStack hearth$getOutputStack() {
+        return ((net.minecraft.world.Container) this).getItem(2);
+    }
+
+    @Override
+    public int hearth$getCookingProgress() {
+        return this.cookingProgress;
+    }
+
+    @Override
+    public int hearth$getCookingTotalTime() {
+        return this.cookingTotalTime;
     }
 
     @Override

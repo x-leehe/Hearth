@@ -9,6 +9,7 @@ import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
+import org.awp0rtuh1ty.hearth.block.ChimneyBlock;
 
 public class Chimney {
     public static final Block CHIMNEY_BLOCK = Registry.register(

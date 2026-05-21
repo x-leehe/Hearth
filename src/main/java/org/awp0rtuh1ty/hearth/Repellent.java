@@ -12,6 +12,8 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import org.awp0rtuh1ty.hearth.block.RepellentBlock;
+import org.awp0rtuh1ty.hearth.block.RepellentBlockEntity;
 import org.awp0rtuh1ty.hearth.screen.RepellentScreenHandler;
 
 public class Repellent {

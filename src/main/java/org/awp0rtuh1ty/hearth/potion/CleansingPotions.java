@@ -78,6 +78,7 @@ public class CleansingPotions {
                     BlockEntity be = level.getBlockEntity(pos);
                     if (be instanceof PotionCauldronBlockEntity potionBe) {
                         potionBe.setPotionContents(contents);
+                        potionBe.setPotionItem(stack.getItem());
                         potionBe.setFillLevel(1);
                     }
                 }

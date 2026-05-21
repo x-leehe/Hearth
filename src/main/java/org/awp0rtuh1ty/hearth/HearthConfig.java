@@ -37,6 +37,7 @@ public final class HearthConfig {
                 Hearth.LOGGER.warn("Failed to read config, using defaults", e);
             }
         } else {
+            ensureDefaults(data);
             save();
         }
     }
@@ -54,6 +55,11 @@ public final class HearthConfig {
 
     public static boolean isLoggingEnabled() {
         return data.logEnabled;
+    }
+
+    public static void setLogEnabled(boolean value) {
+        data.logEnabled = value;
+        save();
     }
 
     public static boolean isDestroyEmptyBottles() {
@@ -133,8 +139,10 @@ public final class HearthConfig {
         if (d.potionAffectEntities == null) {
             d.potionAffectEntities = new AffectEntities();
         }
-        if (d.potionAffectEntities.include == null || d.potionAffectEntities.include.isEmpty()) {
-            d.potionAffectEntities.include = defaultMonsters();
+        // null = 字段缺失（首次运行/旧版配置）→ 填入默认值
+        // 空列表 = 用户刻意清空 → 尊重用户选择
+        if (d.potionAffectEntities.include == null) {
+            d.potionAffectEntities.include = new ArrayList<>(defaultMonsters());
         }
         if (d.potionAffectEntities.exclude == null) {
             d.potionAffectEntities.exclude = new ArrayList<>();
@@ -197,8 +205,8 @@ public final class HearthConfig {
 
         ConfigData() {
             this.potionAffectEntities = new AffectEntities();
-            this.potionAffectEntities.include = defaultMonsters();
-            this.potionAffectEntities.exclude = new ArrayList<>();
+            this.potionAffectEntities.include = null;
+            this.potionAffectEntities.exclude = null;
         }
     }
 

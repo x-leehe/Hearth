@@ -1,4 +1,4 @@
-package org.awp0rtuh1ty.hearth;
+package org.awp0rtuh1ty.hearth.item;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
@@ -14,6 +14,7 @@ import net.minecraft.world.level.block.CropBlock;
 import net.minecraft.world.level.block.LayeredCauldronBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
+import org.awp0rtuh1ty.hearth.CleansingCauldron;
 
 public class WoodAshItem extends Item {
     public WoodAshItem(Properties settings) {

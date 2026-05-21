@@ -44,6 +44,7 @@ public class PotionCauldronBlock extends BaseEntityBlock {
             Block.box(2, 0, 2, 14, 3, 14)
     );
 
+    @SuppressWarnings("unused")
     private static final Set<ResourceLocation> CLEANSING_POTION_IDS = Set.of(
             ResourceLocation.fromNamespaceAndPath(Hearth.MOD_ID, "cleansing"),
             ResourceLocation.fromNamespaceAndPath(Hearth.MOD_ID, "long_cleansing"),
@@ -99,7 +100,7 @@ public class PotionCauldronBlock extends BaseEntityBlock {
 
         // 玻璃瓶 → 装取药水
         if (stack.is(Items.GLASS_BOTTLE)) {
-            ItemStack potionStack = new ItemStack(Items.POTION);
+            ItemStack potionStack = new ItemStack(cauldronBe.getPotionItem());
             potionStack.set(DataComponents.POTION_CONTENTS, stored);
 
             stack.shrink(1);

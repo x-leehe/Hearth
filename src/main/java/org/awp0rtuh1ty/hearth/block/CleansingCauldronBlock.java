@@ -124,7 +124,7 @@ public class CleansingCauldronBlock extends LayeredCauldronBlock {
         }
         if (!level.isClientSide) {
             stack.shrink(1);
-            ItemStack cleanedStack = new ItemStack(cleaned, 1);
+            ItemStack cleanedStack = stack.transmuteCopy(cleaned, 1);
             if (!player.getInventory().add(cleanedStack)) {
                 player.drop(cleanedStack, false);
             }

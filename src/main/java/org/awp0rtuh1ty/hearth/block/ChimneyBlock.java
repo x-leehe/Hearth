@@ -1,4 +1,4 @@
-package org.awp0rtuh1ty.hearth;
+package org.awp0rtuh1ty.hearth.block;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
