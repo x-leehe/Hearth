@@ -11,5 +11,16 @@
 	"item.minecraft.potion.effect.long_cleansing": "荡涤药水",
 	"item.minecraft.potion.effect.strong_cleansing": "荡涤药水",
 	"block.hearth.cleansing_cauldron": "荡涤药水炼药锅",
-	"block.hearth.potion_cauldron": "填药炼药锅"
+	"block.hearth.potion_cauldron": "填药炼药锅",
+	"block.hearth.chimney": "烟囱",
+	"block.hearth.repellent": "驱蚊器",
+	"container.hearth.repellent": "驱蚊器",
+	"commands.hearth.byproduct.success": "副产物已设置为 %1$s x%2$s",
+	"commands.hearth.destroyEmptyBottles.true": "空玻璃瓶将被摧毁",
+	"commands.hearth.destroyEmptyBottles.false": "空玻璃瓶将被保留",
+	"commands.hearth.invalid_entity": "无效实体: %1$s",
+	"commands.hearth.potionAffectEntity.include": "已将 %1$s 添加至受影响实体列表",
+	"commands.hearth.potionAffectEntity.exclude": "已将 %1$s 从受影响实体列表中移除",
+	"commands.hearth.potionStack.success": "药水堆叠数量已设置为 %1$s",
+	"commands.hearth.reload.success": "配置已重载"
 }

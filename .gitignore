@@ -32,8 +32,12 @@ bin/
 
 run/
 
-#fabric-docs
+# fabric-docs
 fabric-docs/
+
+# Claude Code
+.claude/
+claude-init.ps1
 
 # java
 

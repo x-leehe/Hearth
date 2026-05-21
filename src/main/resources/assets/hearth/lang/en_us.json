@@ -11,5 +11,16 @@
 	"item.minecraft.potion.effect.long_cleansing": "Potion of Cleansing",
 	"item.minecraft.potion.effect.strong_cleansing": "Potion of Cleansing",
 	"block.hearth.cleansing_cauldron": "Cleansing Cauldron",
-	"block.hearth.potion_cauldron": "Potion-Filled Cauldron"
+	"block.hearth.potion_cauldron": "Potion-Filled Cauldron",
+	"block.hearth.chimney": "Chimney",
+	"block.hearth.repellent": "Repellent",
+	"container.hearth.repellent": "Repellent",
+	"commands.hearth.byproduct.success": "Byproduct set to %1$s x%2$s",
+	"commands.hearth.destroyEmptyBottles.true": "Empty bottles will now be destroyed",
+	"commands.hearth.destroyEmptyBottles.false": "Empty bottles will now be kept",
+	"commands.hearth.invalid_entity": "Invalid entity: %1$s",
+	"commands.hearth.potionAffectEntity.include": "Added %1$s to affected entities",
+	"commands.hearth.potionAffectEntity.exclude": "Removed %1$s from affected entities",
+	"commands.hearth.potionStack.success": "Potion stack size set to %1$s",
+	"commands.hearth.reload.success": "Configuration reloaded"
 }

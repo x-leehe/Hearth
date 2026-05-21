@@ -1,9 +1,9 @@
 package org.awp0rtuh1ty.hearth.mixin;
 
 import org.awp0rtuh1ty.hearth.AshStorage;
+import org.awp0rtuh1ty.hearth.Chimney;
+import org.awp0rtuh1ty.hearth.HearthConfig;
 import org.awp0rtuh1ty.hearth.HearthLogConfig;
-import org.awp0rtuh1ty.hearth.Slag;
-import org.awp0rtuh1ty.hearth.WoodAsh;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.spongepowered.asm.mixin.Mixin;
@@ -14,15 +14,15 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.AbstractFurnaceBlockEntity;
-import net.minecraft.world.level.block.entity.BlastFurnaceBlockEntity;
-import net.minecraft.world.level.block.entity.FurnaceBlockEntity;
-import net.minecraft.world.level.block.entity.SmokerBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
 @Mixin(AbstractFurnaceBlockEntity.class)
@@ -95,6 +95,14 @@ public abstract class AbstractFurnaceBlockEntityMixin implements AshStorage {
 
         int ashToAdd = mixin.hearth$getAshPerRecipe(furnace);
         Item byproductItem = mixin.hearth$getByproductItem(furnace);
+
+        if (hearth$hasAdjacentChimney(level, blockPos)) {
+            if (log) {
+                HEARTH_LOGGER.info("[Hearth] Adjacent chimney detected, skipping byproduct generation");
+            }
+            return;
+        }
+
         if (log) {
             HEARTH_LOGGER.info("[Hearth] Recipe completed! Furnace type: {}, byproduct: {}, amount: {}",
                     furnace.getClass().getSimpleName(), byproductItem, ashToAdd);
@@ -133,27 +141,26 @@ public abstract class AbstractFurnaceBlockEntityMixin implements AshStorage {
 
     @Unique
     private int hearth$getAshPerRecipe(AbstractFurnaceBlockEntity furnace) {
-        if (furnace instanceof FurnaceBlockEntity) {
-            return 2;
-        }
-        if (furnace instanceof SmokerBlockEntity) {
-            return 5;
-        }
-        if (furnace instanceof BlastFurnaceBlockEntity) {
-            return 2;
-        }
-        return 0;
+        return HearthConfig.getByproductCount();
     }
 
     @Unique
     private Item hearth$getByproductItem(AbstractFurnaceBlockEntity furnace) {
-        if (furnace instanceof BlastFurnaceBlockEntity) {
-            return Slag.SLAG;
-        }
-        if (furnace instanceof FurnaceBlockEntity || furnace instanceof SmokerBlockEntity) {
-            return WoodAsh.WOOD_ASH;
+        ResourceLocation id = HearthConfig.getByproductItem();
+        if (id != null) {
+            return BuiltInRegistries.ITEM.get(id);
         }
         return null;
+    }
+
+    @Unique
+    private static boolean hearth$hasAdjacentChimney(Level level, BlockPos blockPos) {
+        for (Direction dir : Direction.values()) {
+            if (level.getBlockState(blockPos.relative(dir)).is(Chimney.CHIMNEY_BLOCK)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Unique
