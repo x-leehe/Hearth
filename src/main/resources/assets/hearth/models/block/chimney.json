@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/cube_bottom_top",
+  "textures": {
+    "top": "hearth:block/chimney_top",
+    "bottom": "hearth:block/chimney",
+    "side": "hearth:block/chimney"
+  }
+}

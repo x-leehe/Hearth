@@ -1,0 +1,5 @@
+{
+  "variants": {
+    "": { "model": "hearth:block/chimney" }
+  }
+}
