@@ -60,11 +60,23 @@ public class RepellentScreenHandler extends AbstractContainerMenu {
             ItemStack item = slot.getItem();
             copy = item.copy();
             if (index < 9) {
+                // From block inventory → player inventory
                 if (!this.moveItemStackTo(item, 9, 45, true)) {
                     return ItemStack.EMPTY;
                 }
             } else if (isPotion(item)) {
+                // From player inventory → block inventory (only potions)
                 if (!this.moveItemStackTo(item, 0, 9, false)) {
+                    return ItemStack.EMPTY;
+                }
+            } else if (index >= 9 && index < 36) {
+                // From main inventory → hotbar
+                if (!this.moveItemStackTo(item, 36, 45, false)) {
+                    return ItemStack.EMPTY;
+                }
+            } else if (index >= 36 && index < 45) {
+                // From hotbar → main inventory
+                if (!this.moveItemStackTo(item, 9, 36, false)) {
                     return ItemStack.EMPTY;
                 }
             }

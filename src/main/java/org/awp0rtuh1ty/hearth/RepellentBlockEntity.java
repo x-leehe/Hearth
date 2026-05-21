@@ -66,6 +66,11 @@ public class RepellentBlockEntity extends BlockEntity implements MenuProvider, W
 
         be.remainingTicks--;
 
+        // Periodic cleanup of stale damage records
+        if (be.remainingTicks % 200 == 0) {
+            DamageTracker.cleanup(level.getGameTime() - DAMAGE_MEMORY_TICKS * 2);
+        }
+
         if (be.remainingTicks <= 0) {
             if (!HearthConfig.isDestroyEmptyBottles()) {
                 Block.popResource(level, pos, new ItemStack(Items.GLASS_BOTTLE));
@@ -142,7 +147,7 @@ public class RepellentBlockEntity extends BlockEntity implements MenuProvider, W
         }
         PotionContents contents = stack.getOrDefault(DataComponents.POTION_CONTENTS, PotionContents.EMPTY);
         return contents.potion().map(holder ->
-                holder.unwrapKey().map(key -> key.location().getNamespace().equals(Hearth.MOD_ID)).orElse(false)
+                holder.unwrapKey().map(key -> CLEANSING_POTION_IDS.contains(key.location().toString())).orElse(false)
         ).orElse(false);
     }
 

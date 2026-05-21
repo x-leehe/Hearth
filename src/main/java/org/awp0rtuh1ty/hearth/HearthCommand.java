@@ -140,6 +140,26 @@ public class HearthCommand {
                             return 1;
                         })
                 )
+
+                // /hearth saveDefault
+                .then(Commands.literal("saveDefault")
+                        .executes(ctx -> {
+                            HearthConfig.save();
+                            ctx.getSource().sendSuccess(
+                                    () -> Component.translatable("commands.hearth.saveDefault.success"),
+                                    true);
+                            return 1;
+                        })
+                )
+
+                // /hearth help
+                .then(Commands.literal("help")
+                        .executes(ctx -> {
+                            ctx.getSource().sendSuccess(
+                                    () -> Component.translatable("commands.hearth.help"), false);
+                            return 1;
+                        })
+                )
         );
     }
 

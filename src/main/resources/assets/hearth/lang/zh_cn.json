@@ -22,5 +22,7 @@
 	"commands.hearth.potionAffectEntity.include": "已将 %1$s 添加至受影响实体列表",
 	"commands.hearth.potionAffectEntity.exclude": "已将 %1$s 从受影响实体列表中移除",
 	"commands.hearth.potionStack.success": "药水堆叠数量已设置为 %1$s",
-	"commands.hearth.reload.success": "配置已重载"
+	"commands.hearth.reload.success": "配置已重载",
+	"commands.hearth.saveDefault.success": "默认配置已保存至 config/hearth.json",
+	"commands.hearth.help": "\n§6===== /hearth 命令帮助 =====\n§e/hearth potionAffectEntity include|in|+ <entity> §7- 将实体加入受影响列表\n§e/hearth potionAffectEntity exclude|ex|- <entity> §7- 将实体移出受影响列表\n§e/hearth potionStack true|false|<1-64> §7- 设置药水最大堆叠数 (true=64, false=1)\n§e/hearth byproduct <item> <1-64> §7- 设置熔炉副产物及数量\n§e/hearth destroyEmptyBottles true|false §7- 是否销毁空玻璃瓶\n§e/hearth reload §7- 重载配置文件\n§e/hearth saveDefault §7- 保存当前配置\n§e/hearth help §7- 显示此帮助"
 }

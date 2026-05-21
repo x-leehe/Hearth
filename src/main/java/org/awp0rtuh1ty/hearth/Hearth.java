@@ -39,6 +39,7 @@ public class Hearth implements ModInitializer {
         PotionCauldron.initialize();
         Chimney.initialize();
         Repellent.initialize();
+        HearthTech.initialize();
         HearthCommand.initialize();
     }
 }

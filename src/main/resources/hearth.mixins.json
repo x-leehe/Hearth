@@ -8,7 +8,12 @@
 		"AreaEffectCloudMixin",
 		"LivingEntityMixin",
 		"ThrownPotionMixin",
-		"DamageTrackerMixin"
+		"DamageTrackerMixin",
+		"PotionStackMixin",
+		"DustBagStackMixin",
+		"SignBlockMixin",
+		"DustBagBlockMixin",
+		"BlockStateBaseMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

@@ -22,5 +22,7 @@
 	"commands.hearth.potionAffectEntity.include": "Added %1$s to affected entities",
 	"commands.hearth.potionAffectEntity.exclude": "Removed %1$s from affected entities",
 	"commands.hearth.potionStack.success": "Potion stack size set to %1$s",
-	"commands.hearth.reload.success": "Configuration reloaded"
+	"commands.hearth.reload.success": "Configuration reloaded",
+	"commands.hearth.saveDefault.success": "Default config saved to config/hearth.json",
+	"commands.hearth.help": "\n§6===== /hearth Command Help =====\n§e/hearth potionAffectEntity include|in|+ <entity> §7- Add entity to affected list\n§e/hearth potionAffectEntity exclude|ex|- <entity> §7- Remove entity from affected list\n§e/hearth potionStack true|false|<1-64> §7- Set max potion stack size (true=64, false=1)\n§e/hearth byproduct <item> <1-64> §7- Set furnace byproduct item & count\n§e/hearth destroyEmptyBottles true|false §7- Toggle empty bottle destruction\n§e/hearth reload §7- Reload configuration from file\n§e/hearth saveDefault §7- Save current config to file\n§e/hearth help §7- Show this help"
 }
