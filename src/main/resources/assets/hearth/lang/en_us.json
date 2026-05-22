@@ -27,11 +27,17 @@
 	"hearth.category.Vulkan": "§6--- Hearth §8[Vulkan] §6---",
 	"hearth.category.Tech": "§6--- Hearth §8[Tech] §6---",
 
+	"hearth.rule.potionStackSize.name": "potionStackSize",
 	"hearth.rule.potionStackSize.desc": "Potion max stack size (true=64 false=1 or 1-64)",
+	"hearth.rule.byproductItem.name": "byproductItem",
 	"hearth.rule.byproductItem.desc": "Furnace byproduct item ID",
+	"hearth.rule.byproductCount.name": "byproductCount",
 	"hearth.rule.byproductCount.desc": "Furnace byproduct count per recipe",
+	"hearth.rule.logEnabled.name": "logEnabled",
 	"hearth.rule.logEnabled.desc": "Enable debug logging to game log",
+	"hearth.rule.language.name": "language",
 	"hearth.rule.language.desc": "Command output language (empty=auto, en_us or zh_cn)",
+	"hearth.rule.destroyEmptyBottles.name": "destroyEmptyBottles",
 	"hearth.rule.destroyEmptyBottles.desc": "Destroy empty bottles after drinking potions",
 
 	"commands.hearth.byproduct.success": "Byproduct set to %1$s x%2$s",

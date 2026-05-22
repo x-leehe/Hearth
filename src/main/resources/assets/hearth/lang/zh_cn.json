@@ -27,11 +27,17 @@
 	"hearth.category.Vulkan": "§6--- Hearth §8[Vulkan] §6---",
 	"hearth.category.Tech": "§6--- Hearth §8[Tech] §6---",
 
+	"hearth.rule.potionStackSize.name": "药水堆叠",
 	"hearth.rule.potionStackSize.desc": "药水最大堆叠数 (true=64 false=1 或 1-64)",
+	"hearth.rule.byproductItem.name": "副产物物品",
 	"hearth.rule.byproductItem.desc": "熔炉副产物物品 ID",
+	"hearth.rule.byproductCount.name": "副产物数量",
 	"hearth.rule.byproductCount.desc": "熔炉每配方副产物数量",
+	"hearth.rule.logEnabled.name": "调试日志",
 	"hearth.rule.logEnabled.desc": "启用调试日志输出到游戏日志",
+	"hearth.rule.language.name": "输出语言",
 	"hearth.rule.language.desc": "命令输出语言 (空=跟随客户端, en_us 或 zh_cn)",
+	"hearth.rule.destroyEmptyBottles.name": "销毁空瓶",
 	"hearth.rule.destroyEmptyBottles.desc": "饮用药水后销毁空玻璃瓶",
 
 	"commands.hearth.byproduct.success": "副产物已设置为 %1$s x%2$s",

@@ -70,12 +70,15 @@ public final class HearthConfig {
             HearthRule ann = field.getAnnotation(HearthRule.class);
             if (ann == null) continue;
             HearthRuleDef<?> rule = HearthRuleDef.of(field);
-            rules.put(rule.name, rule);
+            rules.put(rule.name(), rule);
         }
     }
 
     public static Map<String, HearthRuleDef<?>> getRules() { return Collections.unmodifiableMap(rules); }
     public static HearthRuleDef<?> getRule(String name) { return rules.get(name); }
+    public static Collection<HearthRuleDef<?>> getRulesSorted() {
+        return rules.values().stream().sorted(Comparator.comparing(HearthRuleDef::name)).toList();
+    }
 
     /** Called by HearthRuleDef when a rule value changes. */
     public static void notifyRuleChanged(CommandSourceStack source, HearthRuleDef<?> rule, String userInput) {
