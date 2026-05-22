@@ -35,7 +35,7 @@
 	"hearth.rule.language.name": "language",
 	"hearth.rule.language.desc": "Command output language",
 	"hearth.rule.destroyEmptyBottles.name": "destroyEmptyBottles",
-	"hearth.rule.destroyEmptyBottles.desc": "Destroy empty bottles after drinking",
+	"hearth.rule.destroyEmptyBottles.desc": "Destroy empty bottles after repellent use",
 
 	"commands.hearth.byproduct.success": "Byproduct set to %1$s x%2$s",
 	"commands.hearth.invalid_entity": "Invalid entity: %1$s",
