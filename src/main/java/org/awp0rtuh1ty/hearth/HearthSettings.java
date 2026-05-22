@@ -15,11 +15,23 @@ public final class HearthSettings {
     @HearthRule(categories = {"Vulkan"}, strict = false)
     public static int byproductCount = 2;
 
+    @HearthRule(categories = {"Vulkan"}, strict = false)
+    public static String blastFurnaceByproductItem = "hearth:slag";
+
+    @HearthRule(categories = {"Vulkan"}, strict = false)
+    public static int blastFurnaceByproductCount = 2;
+
+    @HearthRule(categories = {"Vulkan"}, strict = false)
+    public static int smokerByproductCount = 5;
+
     @HearthRule(categories = {"Vulkan"}, options = {"true", "false"})
     public static boolean logEnabled;
 
     @HearthRule(categories = {"Vulkan"}, options = {"", "en_us", "zh_cn"}, strict = false)
     public static String language = "";
+
+    @HearthRule(categories = {"Vulkan"}, options = {"Alt", "Always", "Off"}, strict = false)
+    public static String repellentStatusOverlay = "Alt";
 
     // ========== [Tech] ==========
 

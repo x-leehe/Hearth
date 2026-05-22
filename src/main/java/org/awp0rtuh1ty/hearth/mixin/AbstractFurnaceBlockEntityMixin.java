@@ -29,7 +29,6 @@ import net.minecraft.world.level.block.entity.AbstractFurnaceBlockEntity;
 import net.minecraft.world.level.block.entity.BlastFurnaceBlockEntity;
 import net.minecraft.world.level.block.entity.SmokerBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import org.awp0rtuh1ty.hearth.Slag;
 
 @Mixin(AbstractFurnaceBlockEntity.class)
 public abstract class AbstractFurnaceBlockEntityMixin implements AshStorage {
@@ -170,16 +169,19 @@ public abstract class AbstractFurnaceBlockEntityMixin implements AshStorage {
 
     @Unique
     private int hearth$getAshPerRecipe(AbstractFurnaceBlockEntity furnace) {
-        if (furnace instanceof SmokerBlockEntity) return 5;
+        if (furnace instanceof BlastFurnaceBlockEntity) return HearthConfig.getBlastFurnaceByproductCount();
+        if (furnace instanceof SmokerBlockEntity) return HearthConfig.getSmokerByproductCount();
         return HearthConfig.getByproductCount();
     }
 
     @Unique
     private Item hearth$getByproductItem(AbstractFurnaceBlockEntity furnace) {
+        ResourceLocation id;
         if (furnace instanceof BlastFurnaceBlockEntity) {
-            return Slag.SLAG;
+            id = HearthConfig.getBlastFurnaceByproductItem();
+        } else {
+            id = HearthConfig.getByproductItem();
         }
-        ResourceLocation id = HearthConfig.getByproductItem();
         if (id != null) {
             return BuiltInRegistries.ITEM.get(id);
         }

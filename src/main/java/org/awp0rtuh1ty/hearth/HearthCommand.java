@@ -62,19 +62,7 @@ public class HearthCommand {
                             return filtered.size();
                         })));
 
-        root.then(literal("byproduct")
-                .executes(c -> { showByproduct(c.getSource()); return 1; })
-                .then(argument("item", ItemArgument.item(buildContext))
-                        .then(argument("count", IntegerArgumentType.integer(1, 64))
-                                .executes(c -> {
-                                    ItemInput item = ItemArgument.getItem(c, "item");
-                                    int count = IntegerArgumentType.getInteger(c, "count");
-                                    String itemId = BuiltInRegistries.ITEM.getKey(item.getItem()).toString();
-                                    HearthConfig.setByproduct(itemId, count);
-                                    HearthMessenger.m(c.getSource(),
-                                            "gi " + Component.translatable("commands.hearth.byproduct.success", itemId, count).getString());
-                                    return count;
-                                }))));
+        root.then(buildByproductCommand(buildContext));
 
         root.then(buildPotionAffectEntity());
 
@@ -213,7 +201,30 @@ public class HearthCommand {
         }
         if (!tagList.isEmpty()) tagList.remove(tagList.size() - 1);
         HearthMessenger.m(source, tagList.toArray());
+
+        // Entity affect list summary
+        showEntityListSummary(source);
+
         return nonDefault.size();
+    }
+
+    private static void showEntityListSummary(CommandSourceStack source) {
+        var included = HearthConfig.getIncludedEntities();
+        var excluded = HearthConfig.getExcludedEntities();
+        if (included.isEmpty() && excluded.isEmpty()) return;
+        List<Object> parts = new ArrayList<>();
+        parts.add("w potionAffectEntities: ");
+        parts.add("?/hearth potionAffectEntity ");
+        parts.add("^g Manage entity list");
+        if (!included.isEmpty()) {
+            parts.add("l [+" + included.size() + "]");
+            parts.add("^g Included: " + String.join(", ", included));
+        }
+        if (!excluded.isEmpty()) {
+            parts.add("r [-" + excluded.size() + "]");
+            parts.add("^g Excluded: " + String.join(", ", excluded));
+        }
+        HearthMessenger.m(source, parts.toArray());
     }
 
     private static int listSettings(CommandSourceStack source, Collection<HearthRuleDef<?>> rules) {
@@ -240,10 +251,93 @@ public class HearthCommand {
         return HearthMessenger.c(args.toArray());
     }
 
-    private static void showByproduct(CommandSourceStack source) {
-        var bp = HearthConfig.getByproductItem();
-        String val = (bp != null ? bp.toString() : "hearth:wood_ash") + " x" + HearthConfig.getByproductCount();
-        HearthMessenger.m(source, "wb byproduct = " + val, "?/hearth byproduct ", "^g Set byproduct");
+    // ============================================================
+    //  byproduct command — per-furnace-type
+    // ============================================================
+
+    private static LiteralArgumentBuilder<CommandSourceStack> buildByproductCommand(CommandBuildContext buildContext) {
+        var cmd = literal("byproduct");
+
+        cmd.executes(c -> { showByproductAll(c.getSource()); return 1; });
+
+        // /hearth byproduct furnace <item> <count>
+        cmd.then(literal("furnace")
+                .then(argument("item", ItemArgument.item(buildContext))
+                        .then(argument("count", IntegerArgumentType.integer(1, 64))
+                                .executes(c -> setByproductTyped(c, "furnace")))));
+
+        // /hearth byproduct blastFurnace <item> <count>
+        cmd.then(literal("blastFurnace")
+                .then(argument("item", ItemArgument.item(buildContext))
+                        .then(argument("count", IntegerArgumentType.integer(1, 64))
+                                .executes(c -> setByproductTyped(c, "blastFurnace")))));
+
+        // /hearth byproduct smoker <count>
+        cmd.then(literal("smoker")
+                .then(argument("count", IntegerArgumentType.integer(1, 64))
+                        .executes(c -> {
+                            int count = IntegerArgumentType.getInteger(c, "count");
+                            HearthConfig.setSmokerByproductCount(count);
+                            String itemId = HearthConfig.getByproductItem().toString();
+                            HearthMessenger.m(c.getSource(),
+                                    "gi Smoker byproduct: " + itemId + " x" + count);
+                            return count;
+                        })));
+
+        return cmd;
+    }
+
+    private static int setByproductTyped(CommandContext<CommandSourceStack> c, String furnaceType) {
+        ItemInput item = ItemArgument.getItem(c, "item");
+        int count = IntegerArgumentType.getInteger(c, "count");
+        String itemId = BuiltInRegistries.ITEM.getKey(item.getItem()).toString();
+        HearthConfig.setByproduct(furnaceType, itemId, count);
+        String typeLabel = furnaceType.equals("blastFurnace") ? "Blast Furnace" : "Furnace";
+        HearthMessenger.m(c.getSource(),
+                "gi " + typeLabel + " byproduct: " + itemId + " x" + count);
+        return count;
+    }
+
+    private static int showByproductAll(CommandSourceStack source) {
+        HearthMessenger.m(source, "wb -- Byproduct Settings --");
+
+        // Regular furnace
+        String furnaceItem = HearthConfig.getByproductItem().toString();
+        int furnaceCount = HearthConfig.getByproductCount();
+        HearthMessenger.m(source, "w <Furnace>: ", "c " + furnaceItem + " x" + furnaceCount + " ",
+                countButtons("furnace", furnaceItem, furnaceCount));
+
+        // Blast furnace
+        String blastItem = HearthConfig.getBlastFurnaceByproductItem().toString();
+        int blastCount = HearthConfig.getBlastFurnaceByproductCount();
+        HearthMessenger.m(source, "w <Blast Furnace>: ", "c " + blastItem + " x" + blastCount + " ",
+                countButtons("blastFurnace", blastItem, blastCount));
+
+        // Smoker
+        String smokerItem = HearthConfig.getByproductItem().toString();
+        int smokerCount = HearthConfig.getSmokerByproductCount();
+        HearthMessenger.m(source, "w <Smoker>: ", "c " + smokerItem + " x" + smokerCount + " ",
+                countButtons("smoker", null, smokerCount));
+
+        return 1;
+    }
+
+    private static Component countButtons(String furnaceType, String item, int currentCount) {
+        List<Object> parts = new ArrayList<>();
+        for (int n : new int[]{1, 2, 3, 5, 8, 16, 32, 64}) {
+            if (n == currentCount) {
+                parts.add("lb [" + n + "]");
+            } else if (furnaceType.equals("smoker")) {
+                parts.add("y [" + n + "]");
+                parts.add("^g Switch to " + n);
+                parts.add("?/hearth byproduct smoker " + n);
+            } else {
+                parts.add("y [" + n + "]");
+                parts.add("^g Switch to " + n);
+                parts.add("?/hearth byproduct " + furnaceType + " " + item + " " + n);
+            }
+        }
+        return HearthMessenger.c(parts.toArray());
     }
 
     // ============================================================

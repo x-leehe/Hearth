@@ -12,6 +12,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
+import org.awp0rtuh1ty.hearth.HearthConfig;
 import org.awp0rtuh1ty.hearth.block.RepellentBlockEntity;
 
 import java.util.ArrayList;
@@ -34,7 +35,9 @@ public final class RepellentOverlayRenderer {
         HitResult hit = client.hitResult;
         if (!(hit instanceof BlockHitResult blockHit) || hit.getType() == HitResult.Type.MISS) return;
 
-        if (!Screen.hasAltDown()) return;
+        String mode = HearthConfig.getRepellentStatusOverlay();
+        if ("Off".equalsIgnoreCase(mode)) return;
+        if (!"Always".equalsIgnoreCase(mode) && !Screen.hasAltDown()) return;
 
         BlockPos pos = blockHit.getBlockPos();
         BlockEntity be = client.level.getBlockEntity(pos);
