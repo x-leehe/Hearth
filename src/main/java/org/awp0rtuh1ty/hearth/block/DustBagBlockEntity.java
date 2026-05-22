@@ -54,11 +54,16 @@ public class DustBagBlockEntity extends BlockEntity implements MenuProvider, Wor
         if (level.getGameTime() % 20 != 0) {
             return;
         }
-        Direction facing = state.getValue(DustBagBlock.FACING);
-        BlockPos targetPos = pos.relative(facing);
-        BlockEntity targetBe = level.getBlockEntity(targetPos);
-        if (targetBe instanceof AshStorage ashStorage) {
-            be.pullAsh(ashStorage);
+        for (int dx = -1; dx <= 1; dx++) {
+            for (int dy = -1; dy <= 1; dy++) {
+                for (int dz = -1; dz <= 1; dz++) {
+                    if (dx == 0 && dy == 0 && dz == 0) continue;
+                    BlockEntity targetBe = level.getBlockEntity(pos.offset(dx, dy, dz));
+                    if (targetBe instanceof AshStorage ashStorage) {
+                        be.pullAsh(ashStorage);
+                    }
+                }
+            }
         }
     }
 
