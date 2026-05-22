@@ -117,7 +117,7 @@ public class RepellentBlockEntity extends BlockEntity implements MenuProvider, W
 
         if (be.remainingTicks <= 0) {
             if (!HearthConfig.isDestroyEmptyBottles()) {
-                Block.popResource(level, pos, new ItemStack(Items.GLASS_BOTTLE));
+                be.returnEmptyBottle(level, pos);
             }
             be.potionVariant = null;
             be.setChanged();
@@ -190,6 +190,28 @@ public class RepellentBlockEntity extends BlockEntity implements MenuProvider, W
             }
             return;
         }
+    }
+
+    private void returnEmptyBottle(Level level, BlockPos pos) {
+        ItemStack bottle = new ItemStack(Items.GLASS_BOTTLE);
+        if (HearthConfig.getPotionStackSize() > 1) {
+            Block.popResource(level, pos.above(), bottle);
+            return;
+        }
+        for (int i = 0; i < INVENTORY_SIZE; i++) {
+            ItemStack slot = inventory.getItem(i);
+            if (slot.is(Items.GLASS_BOTTLE) && slot.getCount() < slot.getMaxStackSize()) {
+                slot.grow(1);
+                return;
+            }
+        }
+        for (int i = 0; i < INVENTORY_SIZE; i++) {
+            if (inventory.getItem(i).isEmpty()) {
+                inventory.setItem(i, bottle);
+                return;
+            }
+        }
+        Block.popResource(level, pos.above(), bottle);
     }
 
     private static boolean isCleansingPotionItem(ItemStack stack) {

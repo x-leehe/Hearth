@@ -170,6 +170,7 @@ public abstract class AbstractFurnaceBlockEntityMixin implements AshStorage {
 
     @Unique
     private int hearth$getAshPerRecipe(AbstractFurnaceBlockEntity furnace) {
+        if (furnace instanceof SmokerBlockEntity) return 5;
         return HearthConfig.getByproductCount();
     }
 
@@ -177,9 +178,6 @@ public abstract class AbstractFurnaceBlockEntityMixin implements AshStorage {
     private Item hearth$getByproductItem(AbstractFurnaceBlockEntity furnace) {
         if (furnace instanceof BlastFurnaceBlockEntity) {
             return Slag.SLAG;
-        }
-        if (furnace instanceof SmokerBlockEntity) {
-            return null;
         }
         ResourceLocation id = HearthConfig.getByproductItem();
         if (id != null) {
