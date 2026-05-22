@@ -266,11 +266,16 @@ public class HearthCommand {
                         .then(argument("count", IntegerArgumentType.integer(1, 64))
                                 .executes(c -> setByproductTyped(c, "furnace")))));
 
-        // /hearth byproduct blastFurnace <item> <count>
+        // /hearth byproduct blastFurnace <count>
         cmd.then(literal("blastFurnace")
-                .then(argument("item", ItemArgument.item(buildContext))
-                        .then(argument("count", IntegerArgumentType.integer(1, 64))
-                                .executes(c -> setByproductTyped(c, "blastFurnace")))));
+                .then(argument("count", IntegerArgumentType.integer(1, 64))
+                        .executes(c -> {
+                            int count = IntegerArgumentType.getInteger(c, "count");
+                            HearthConfig.setByproduct("blastFurnace", null, count);
+                            HearthMessenger.m(c.getSource(),
+                                    "gi Blast Furnace byproduct: hearth:slag x" + count);
+                            return count;
+                        })));
 
         // /hearth byproduct smoker <count>
         cmd.then(literal("smoker")
@@ -292,9 +297,8 @@ public class HearthCommand {
         int count = IntegerArgumentType.getInteger(c, "count");
         String itemId = BuiltInRegistries.ITEM.getKey(item.getItem()).toString();
         HearthConfig.setByproduct(furnaceType, itemId, count);
-        String typeLabel = furnaceType.equals("blastFurnace") ? "Blast Furnace" : "Furnace";
         HearthMessenger.m(c.getSource(),
-                "gi " + typeLabel + " byproduct: " + itemId + " x" + count);
+                "gi Furnace byproduct: " + itemId + " x" + count);
         return count;
     }
 
@@ -307,11 +311,10 @@ public class HearthCommand {
         HearthMessenger.m(source, "w <Furnace>: ", "c " + furnaceItem + " x" + furnaceCount + " ",
                 countButtons("furnace", furnaceItem, furnaceCount));
 
-        // Blast furnace
-        String blastItem = HearthConfig.getBlastFurnaceByproductItem().toString();
+        // Blast furnace (always slag)
         int blastCount = HearthConfig.getBlastFurnaceByproductCount();
-        HearthMessenger.m(source, "w <Blast Furnace>: ", "c " + blastItem + " x" + blastCount + " ",
-                countButtons("blastFurnace", blastItem, blastCount));
+        HearthMessenger.m(source, "w <Blast Furnace>: ", "c hearth:slag x" + blastCount + " ",
+                countButtons("blastFurnace", null, blastCount));
 
         // Smoker
         String smokerItem = HearthConfig.getByproductItem().toString();
@@ -331,6 +334,10 @@ public class HearthCommand {
                 parts.add("y [" + n + "]");
                 parts.add("^g Switch to " + n);
                 parts.add("?/hearth byproduct smoker " + n);
+            } else if (furnaceType.equals("blastFurnace")) {
+                parts.add("y [" + n + "]");
+                parts.add("^g Switch to " + n);
+                parts.add("?/hearth byproduct blastFurnace " + n);
             } else {
                 parts.add("y [" + n + "]");
                 parts.add("^g Switch to " + n);

@@ -16,9 +16,6 @@ public final class HearthSettings {
     public static int byproductCount = 2;
 
     @HearthRule(categories = {"Vulkan"}, strict = false)
-    public static String blastFurnaceByproductItem = "hearth:slag";
-
-    @HearthRule(categories = {"Vulkan"}, strict = false)
     public static int blastFurnaceByproductCount = 2;
 
     @HearthRule(categories = {"Vulkan"}, strict = false)

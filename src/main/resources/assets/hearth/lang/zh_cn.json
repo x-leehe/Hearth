@@ -36,8 +36,6 @@
 	"hearth.rule.language.desc": "命令输出语言",
 	"hearth.rule.destroyEmptyBottles.name": "销毁空瓶",
 	"hearth.rule.destroyEmptyBottles.desc": "驱蚊器使用药水后销毁空瓶",
-	"hearth.rule.blastFurnaceByproductItem.name": "高炉副产物",
-	"hearth.rule.blastFurnaceByproductItem.desc": "高炉副产物物品",
 	"hearth.rule.blastFurnaceByproductCount.name": "高炉副产物数量",
 	"hearth.rule.blastFurnaceByproductCount.desc": "高炉每配方副产物数量",
 	"hearth.rule.smokerByproductCount.name": "烟熏炉副产物数量",

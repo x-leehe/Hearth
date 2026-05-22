@@ -36,8 +36,6 @@
 	"hearth.rule.language.desc": "Command output language",
 	"hearth.rule.destroyEmptyBottles.name": "destroyEmptyBottles",
 	"hearth.rule.destroyEmptyBottles.desc": "Destroy empty bottles after repellent use",
-	"hearth.rule.blastFurnaceByproductItem.name": "blastFurnaceByproductItem",
-	"hearth.rule.blastFurnaceByproductItem.desc": "Blast furnace byproduct item",
 	"hearth.rule.blastFurnaceByproductCount.name": "blastFurnaceByproductCount",
 	"hearth.rule.blastFurnaceByproductCount.desc": "Blast furnace byproduct count per recipe",
 	"hearth.rule.smokerByproductCount.name": "smokerByproductCount",

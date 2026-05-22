@@ -96,7 +96,6 @@ public final class HearthConfig {
         HearthSettings.logEnabled = data.logEnabled;
         HearthSettings.byproductItem = data.byproductItem;
         HearthSettings.byproductCount = data.byproductCount;
-        HearthSettings.blastFurnaceByproductItem = data.blastFurnaceByproductItem;
         HearthSettings.blastFurnaceByproductCount = data.blastFurnaceByproductCount;
         HearthSettings.smokerByproductCount = data.smokerByproductCount;
         if (data.language != null) HearthSettings.language = data.language;
@@ -109,7 +108,6 @@ public final class HearthConfig {
         data.logEnabled = HearthSettings.logEnabled;
         data.byproductItem = HearthSettings.byproductItem;
         data.byproductCount = HearthSettings.byproductCount;
-        data.blastFurnaceByproductItem = HearthSettings.blastFurnaceByproductItem;
         data.blastFurnaceByproductCount = HearthSettings.blastFurnaceByproductCount;
         data.smokerByproductCount = HearthSettings.smokerByproductCount;
         data.language = HearthSettings.language;
@@ -131,7 +129,6 @@ public final class HearthConfig {
     public static int getByproductCount() { return data.byproductCount; }
 
     // Blast furnace byproduct
-    public static ResourceLocation getBlastFurnaceByproductItem() { return ResourceLocation.tryParse(data.blastFurnaceByproductItem); }
     public static int getBlastFurnaceByproductCount() { return data.blastFurnaceByproductCount; }
 
     // Smoker byproduct count
@@ -139,10 +136,8 @@ public final class HearthConfig {
 
     public static void setByproduct(String furnaceType, String item, int count) {
         if ("blastFurnace".equals(furnaceType)) {
-            HearthSettings.blastFurnaceByproductItem = item;
             HearthSettings.blastFurnaceByproductCount = Math.max(1, Math.min(count, 64));
         } else {
-            // "furnace" — regular furnace; "smoker" only changes count
             if (item != null) HearthSettings.byproductItem = item;
             HearthSettings.byproductCount = Math.max(1, Math.min(count, 64));
         }
@@ -195,7 +190,6 @@ public final class HearthConfig {
         if (d.potionAffectEntities.exclude == null) d.potionAffectEntities.exclude = new ArrayList<>();
         if (d.byproductItem == null) d.byproductItem = "hearth:wood_ash";
         if (d.byproductCount <= 0) d.byproductCount = 2;
-        if (d.blastFurnaceByproductItem == null) d.blastFurnaceByproductItem = "hearth:slag";
         if (d.blastFurnaceByproductCount <= 0) d.blastFurnaceByproductCount = 2;
         if (d.smokerByproductCount <= 0) d.smokerByproductCount = 5;
         if (d.repellentStatusOverlay == null) d.repellentStatusOverlay = "Alt";
@@ -231,7 +225,6 @@ public final class HearthConfig {
         String language = "";
         String byproductItem = "hearth:wood_ash";
         int byproductCount = 2;
-        String blastFurnaceByproductItem = "hearth:slag";
         int blastFurnaceByproductCount = 2;
         int smokerByproductCount = 5;
         String repellentStatusOverlay = "Alt";
