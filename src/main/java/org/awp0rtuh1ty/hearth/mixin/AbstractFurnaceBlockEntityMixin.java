@@ -284,6 +284,7 @@ public abstract class AbstractFurnaceBlockEntityMixin implements AshStorage {
     public ItemStack hearth$takeExtraSlot3() {
         ItemStack out = this.hearth$slot3 == null ? ItemStack.EMPTY : this.hearth$slot3.copy();
         this.hearth$slot3 = ItemStack.EMPTY;
+        ((AbstractFurnaceBlockEntity)(Object)this).setChanged();
         return out;
     }
 
@@ -291,6 +292,7 @@ public abstract class AbstractFurnaceBlockEntityMixin implements AshStorage {
     public ItemStack hearth$takeExtraSlot4() {
         ItemStack out = this.hearth$slot4 == null ? ItemStack.EMPTY : this.hearth$slot4.copy();
         this.hearth$slot4 = ItemStack.EMPTY;
+        ((AbstractFurnaceBlockEntity)(Object)this).setChanged();
         return out;
     }
 
@@ -301,6 +303,7 @@ public abstract class AbstractFurnaceBlockEntityMixin implements AshStorage {
             if (this.hearth$slot3.isEmpty()) {
                 this.hearth$slot3 = ItemStack.EMPTY;
             }
+            ((AbstractFurnaceBlockEntity)(Object)this).setChanged();
         }
     }
 
@@ -311,6 +314,7 @@ public abstract class AbstractFurnaceBlockEntityMixin implements AshStorage {
             if (this.hearth$slot4.isEmpty()) {
                 this.hearth$slot4 = ItemStack.EMPTY;
             }
+            ((AbstractFurnaceBlockEntity)(Object)this).setChanged();
         }
     }
 }

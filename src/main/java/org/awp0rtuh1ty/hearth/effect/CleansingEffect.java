@@ -1,5 +1,6 @@
 package org.awp0rtuh1ty.hearth.effect;
 
+import net.minecraft.core.Holder;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -7,7 +8,8 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 
-import java.util.Iterator;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CleansingEffect extends MobEffect {
     public CleansingEffect() {
@@ -42,13 +44,15 @@ public class CleansingEffect extends MobEffect {
 
     @Override
     public void onEffectStarted(LivingEntity entity, int amplifier) {
-        // 立即清除所有负面效果
-        Iterator<MobEffectInstance> it = entity.getActiveEffects().iterator();
-        while (it.hasNext()) {
-            MobEffectInstance instance = it.next();
+        // 立即清除所有负面效果（先收集再移除，避免CME）
+        List<Holder<MobEffect>> toRemove = new ArrayList<>();
+        for (MobEffectInstance instance : entity.getActiveEffects()) {
             if (instance.getEffect().value().getCategory() == MobEffectCategory.HARMFUL) {
-                entity.removeEffect(instance.getEffect());
+                toRemove.add(instance.getEffect());
             }
+        }
+        for (Holder<MobEffect> effect : toRemove) {
+            entity.removeEffect(effect);
         }
 
         // 饮用时 -2HP（仅对玩家生效，避免喷溅/滞留药水误伤）

@@ -117,9 +117,9 @@ public class PotionCauldronBlock extends BaseEntityBlock {
             return ItemInteractionResult.sidedSuccess(false);
         }
 
-        // 相同药水 → 填充炼药锅
+        // 相同药水(效果+类型) → 填充炼药锅
         PotionContents held = stack.getOrDefault(DataComponents.POTION_CONTENTS, PotionContents.EMPTY);
-        if (held.equals(stored) && curLevel < 3) {
+        if (held.equals(stored) && stack.getItem() == cauldronBe.getPotionItem() && curLevel < 3) {
             curLevel++;
             state = state.setValue(LEVEL, curLevel);
             level.setBlock(pos, state, 3);

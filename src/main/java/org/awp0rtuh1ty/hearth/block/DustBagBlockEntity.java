@@ -106,6 +106,7 @@ public class DustBagBlockEntity extends BlockEntity implements MenuProvider, Wor
                 int canAdd = Math.min(stack.getCount(), slot.getMaxStackSize() - slot.getCount());
                 slot.grow(canAdd);
                 stack.shrink(canAdd);
+                this.inventory.setChanged();
                 if (stack.isEmpty()) {
                     return ItemStack.EMPTY;
                 }

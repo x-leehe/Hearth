@@ -123,9 +123,11 @@ public class CleansingCauldronBlock extends LayeredCauldronBlock {
             return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         }
         if (!level.isClientSide) {
-            stack.shrink(1);
             ItemStack cleanedStack = stack.transmuteCopy(cleaned, 1);
-            if (!player.getInventory().add(cleanedStack)) {
+            stack.shrink(1);
+            if (stack.isEmpty()) {
+                player.setItemInHand(hand, cleanedStack);
+            } else if (!player.getInventory().add(cleanedStack)) {
                 player.drop(cleanedStack, false);
             }
             LayeredCauldronBlock.lowerFillLevel(state, level, pos);
