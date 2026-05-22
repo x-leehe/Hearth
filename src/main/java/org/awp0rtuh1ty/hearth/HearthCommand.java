@@ -59,6 +59,7 @@ public class HearthCommand {
                             var filtered = HearthConfig.getRulesSorted().stream()
                                     .filter(r -> Arrays.asList(r.categories).contains(cat)).toList();
                             listSettings(c.getSource(), filtered);
+                            if ("Vulkan".equals(cat)) showEntityListSummary(c.getSource());
                             return filtered.size();
                         })));
 
@@ -202,9 +203,6 @@ public class HearthCommand {
         if (!tagList.isEmpty()) tagList.remove(tagList.size() - 1);
         HearthMessenger.m(source, tagList.toArray());
 
-        // Entity affect list summary
-        showEntityListSummary(source);
-
         return nonDefault.size();
     }
 
@@ -213,16 +211,16 @@ public class HearthCommand {
         var excluded = HearthConfig.getExcludedEntities();
         if (included.isEmpty() && excluded.isEmpty()) return;
         List<Object> parts = new ArrayList<>();
-        parts.add("w potionAffectEntities: ");
+        parts.add("w " + Component.translatable("commands.hearth.entity_list.title").getString() + " ");
         parts.add("?/hearth potionAffectEntity ");
-        parts.add("^g Manage entity list");
+        parts.add("^g " + Component.translatable("commands.hearth.entity_list.manage").getString());
         if (!included.isEmpty()) {
             parts.add("l [+" + included.size() + "]");
-            parts.add("^g Included: " + String.join(", ", included));
+            parts.add("^g " + Component.translatable("commands.hearth.entity_list.included").getString() + ": " + String.join(", ", included));
         }
         if (!excluded.isEmpty()) {
             parts.add("r [-" + excluded.size() + "]");
-            parts.add("^g Excluded: " + String.join(", ", excluded));
+            parts.add("^g " + Component.translatable("commands.hearth.entity_list.excluded").getString() + ": " + String.join(", ", excluded));
         }
         HearthMessenger.m(source, parts.toArray());
     }

@@ -61,6 +61,11 @@
 	"commands.hearth.ui.non_default": "已修改的设置",
 	"commands.hearth.ui.browse": "浏览",
 
+	"commands.hearth.entity_list.title": "药水影响实体",
+	"commands.hearth.entity_list.manage": "管理实体列表",
+	"commands.hearth.entity_list.included": "包含",
+	"commands.hearth.entity_list.excluded": "排除",
+
 	"commands.hearth.hover.switch_to": "切换为",
 	"commands.hearth.hover.list_category": "列出所有",
 

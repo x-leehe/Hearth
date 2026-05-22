@@ -52,6 +52,7 @@ public class RepellentBlockEntity extends BlockEntity implements MenuProvider, W
 
     int remainingTicks;
     int potionCount;
+    int lastConsumedSlot = -1;
     String potionVariant; // "normal", "long", "strong"
     boolean wasPowered;
 
@@ -174,6 +175,7 @@ public class RepellentBlockEntity extends BlockEntity implements MenuProvider, W
 
             remainingTicks = ticks;
             potionVariant = variant;
+            lastConsumedSlot = i;
 
             stack.shrink(1);
             if (stack.isEmpty()) {
@@ -194,10 +196,19 @@ public class RepellentBlockEntity extends BlockEntity implements MenuProvider, W
 
     private void returnEmptyBottle(Level level, BlockPos pos) {
         ItemStack bottle = new ItemStack(Items.GLASS_BOTTLE);
-        if (HearthConfig.getPotionStackSize() > 1) {
-            Block.popResource(level, pos.above(), bottle);
-            return;
+        // 1) Replace into the consumed slot if empty (potionStackSize==1 case)
+        if (lastConsumedSlot >= 0 && HearthConfig.getPotionStackSize() == 1) {
+            ItemStack slot = inventory.getItem(lastConsumedSlot);
+            if (slot.isEmpty()) {
+                inventory.setItem(lastConsumedSlot, bottle);
+                return;
+            }
+            if (slot.is(Items.GLASS_BOTTLE) && slot.getCount() < slot.getMaxStackSize()) {
+                slot.grow(1);
+                return;
+            }
         }
+        // 2) Merge with existing empty bottles
         for (int i = 0; i < INVENTORY_SIZE; i++) {
             ItemStack slot = inventory.getItem(i);
             if (slot.is(Items.GLASS_BOTTLE) && slot.getCount() < slot.getMaxStackSize()) {
@@ -205,12 +216,14 @@ public class RepellentBlockEntity extends BlockEntity implements MenuProvider, W
                 return;
             }
         }
+        // 3) Try any empty slot
         for (int i = 0; i < INVENTORY_SIZE; i++) {
             if (inventory.getItem(i).isEmpty()) {
                 inventory.setItem(i, bottle);
                 return;
             }
         }
+        // 4) Drop on top
         Block.popResource(level, pos.above(), bottle);
     }
 

@@ -61,6 +61,11 @@
 	"commands.hearth.ui.non_default": "Changed settings",
 	"commands.hearth.ui.browse": "Browse",
 
+	"commands.hearth.entity_list.title": "potionAffectEntities",
+	"commands.hearth.entity_list.manage": "Manage entity list",
+	"commands.hearth.entity_list.included": "Included",
+	"commands.hearth.entity_list.excluded": "Excluded",
+
 	"commands.hearth.hover.switch_to": "Switch to",
 	"commands.hearth.hover.list_category": "List all",
 
