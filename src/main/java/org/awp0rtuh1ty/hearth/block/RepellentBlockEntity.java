@@ -196,8 +196,8 @@ public class RepellentBlockEntity extends BlockEntity implements MenuProvider, W
 
     private void returnEmptyBottle(Level level, BlockPos pos) {
         ItemStack bottle = new ItemStack(Items.GLASS_BOTTLE);
-        // 1) Replace into the consumed slot if empty (potionStackSize==1 case)
-        if (lastConsumedSlot >= 0 && HearthConfig.getPotionStackSize() == 1) {
+        // 1) Replace into the consumed slot if possible
+        if (lastConsumedSlot >= 0) {
             ItemStack slot = inventory.getItem(lastConsumedSlot);
             if (slot.isEmpty()) {
                 inventory.setItem(lastConsumedSlot, bottle);

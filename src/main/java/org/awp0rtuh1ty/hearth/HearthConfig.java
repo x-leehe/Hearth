@@ -47,8 +47,8 @@ public final class HearthConfig {
             ensureDefaults(data);
             save();
         }
-        applyToSettings();
         parseRules();
+        applyToSettings();
     }
 
     public static void save() {
