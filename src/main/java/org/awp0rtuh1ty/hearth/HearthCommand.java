@@ -5,6 +5,7 @@ import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.minecraft.commands.CommandBuildContext;
@@ -13,9 +14,15 @@ import net.minecraft.commands.Commands;
 import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.commands.arguments.item.ItemArgument;
 import net.minecraft.commands.arguments.item.ItemInput;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.entity.AbstractFurnaceBlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
+import org.awp0rtuh1ty.hearth.block.RepellentBlockEntity;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -82,6 +89,9 @@ public class HearthCommand {
             HearthMessenger.m(c.getSource(), "gi " + Component.translatable("commands.hearth.saveDefault.success").getString());
             return 1;
         }));
+
+        root.then(literal("status")
+                .executes(c -> showBlockStatus(c.getSource())));
 
         root.then(argument("rule", StringArgumentType.word())
                 .suggests(RULE_SUGGEST)
@@ -234,6 +244,58 @@ public class HearthCommand {
         var bp = HearthConfig.getByproductItem();
         String val = (bp != null ? bp.toString() : "hearth:wood_ash") + " x" + HearthConfig.getByproductCount();
         HearthMessenger.m(source, "wb byproduct = " + val, "?/hearth byproduct ", "^g Set byproduct");
+    }
+
+    // ============================================================
+    //  status — show block info when crosshair is on a Hearth block
+    // ============================================================
+
+    private static int showBlockStatus(CommandSourceStack source) throws CommandSyntaxException {
+        var player = source.getPlayerOrException();
+        HitResult hit = player.pick(5.0, 0.0F, false);
+        if (!(hit instanceof BlockHitResult blockHit) || hit.getType() == HitResult.Type.MISS) {
+            HearthMessenger.m(source, "r No block targeted");
+            return 0;
+        }
+        BlockPos pos = blockHit.getBlockPos();
+        BlockEntity be = source.getLevel().getBlockEntity(pos);
+        if (be instanceof RepellentBlockEntity repellent) {
+            int ticks = repellent.getRemainingTicks();
+            String variant = repellent.getPotionVariant();
+            int count = repellent.getPotionCount();
+            boolean powered = source.getLevel().hasNeighborSignal(pos);
+
+            HearthMessenger.m(source, "wb -- Repellent --");
+            HearthMessenger.m(source, "w Powered: ", powered ? "lb yes" : "r no");
+            HearthMessenger.m(source, "w Potions: ", "c " + count);
+            if (variant != null && ticks > 0) {
+                int seconds = ticks / 20;
+                int min = seconds / 60;
+                seconds %= 60;
+                String variantDisplay = switch (variant) {
+                    case "long" -> "Long";
+                    case "strong" -> "Strong";
+                    default -> "Normal";
+                };
+                HearthMessenger.m(source, "w Variant: ", "c " + variantDisplay);
+                HearthMessenger.m(source, "w Remaining: ", "y " + String.format("%d:%02d", min, seconds));
+            } else {
+                HearthMessenger.m(source, "w Status: ", "r idle");
+            }
+        } else if (be instanceof AbstractFurnaceBlockEntity furnace) {
+            HearthMessenger.m(source, "wb -- Furnace --");
+            try {
+                var ashStorage = (AshStorage) furnace;
+                var s3 = ashStorage.hearth$getExtraSlot3();
+                var s4 = ashStorage.hearth$getExtraSlot4();
+                HearthMessenger.m(source, "w Cooking: " + ashStorage.hearth$getCookingProgress() + "/" + ashStorage.hearth$getCookingTotalTime());
+                HearthMessenger.m(source, "w Ash slot 3: ", s3.isEmpty() ? "g empty" : "c " + s3.getCount() + " " + s3.getHoverName().getString());
+                HearthMessenger.m(source, "w Ash slot 4: ", s4.isEmpty() ? "g empty" : "c " + s4.getCount() + " " + s4.getHoverName().getString());
+            } catch (Exception ignored) {}
+        } else {
+            HearthMessenger.m(source, "r No Hearth block targeted");
+        }
+        return 1;
     }
 
     // ============================================================

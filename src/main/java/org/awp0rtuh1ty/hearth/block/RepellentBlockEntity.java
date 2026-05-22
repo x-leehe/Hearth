@@ -79,12 +79,7 @@ public class RepellentBlockEntity extends BlockEntity implements MenuProvider, W
             be.wasPowered = isPowered;
         }
 
-        // Try to consume fuel from inventory if empty
-        if (be.remainingTicks <= 0) {
-            be.tryConsumePotion();
-        }
-
-        // Periodically refresh potion count for syncing
+        // Always refresh potion count for display (HUD / overlay)
         if (level.getGameTime() % 20 == 0) {
             int count = 0;
             for (int i = 0; i < INVENTORY_SIZE; i++) {
@@ -96,6 +91,11 @@ public class RepellentBlockEntity extends BlockEntity implements MenuProvider, W
         }
 
         if (!isPowered) return;
+
+        // Only consume potion when powered and needs fuel
+        if (be.remainingTicks <= 0) {
+            be.tryConsumePotion();
+        }
         if (be.remainingTicks <= 0) return;
 
         be.remainingTicks--;
@@ -245,6 +245,10 @@ public class RepellentBlockEntity extends BlockEntity implements MenuProvider, W
 
     public int getPotionCount() {
         return potionCount;
+    }
+
+    public String getPotionVariant() {
+        return potionVariant;
     }
 
     public Container getInventory() {

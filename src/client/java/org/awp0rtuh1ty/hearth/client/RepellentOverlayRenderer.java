@@ -5,6 +5,7 @@ import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
@@ -32,6 +33,8 @@ public final class RepellentOverlayRenderer {
 
         HitResult hit = client.hitResult;
         if (!(hit instanceof BlockHitResult blockHit) || hit.getType() == HitResult.Type.MISS) return;
+
+        if (!Screen.hasAltDown()) return;
 
         BlockPos pos = blockHit.getBlockPos();
         BlockEntity be = client.level.getBlockEntity(pos);
