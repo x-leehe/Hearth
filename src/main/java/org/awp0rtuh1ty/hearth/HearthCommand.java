@@ -39,14 +39,22 @@ public class HearthCommand {
         LiteralArgumentBuilder<CommandSourceStack> root = literal(ID)
                 .requires(s -> s.hasPermission(2));
 
-        // --- (no args) → list all non-default settings ---
         root.executes(c -> listAllSettings(c.getSource()));
 
-        // --- list ---
         root.then(literal("list")
-                .executes(c -> listSettings(c.getSource(), HearthConfig.getRulesSorted())));
+                .executes(c -> listAllSettings(c.getSource()))
+                .then(argument("category", StringArgumentType.word())
+                        .suggests((c, b) -> suggest(
+                                HearthConfig.getRulesSorted().stream()
+                                        .map(r -> r.categories[0]).distinct().toList(), b))
+                        .executes(c -> {
+                            String cat = StringArgumentType.getString(c, "category");
+                            var filtered = HearthConfig.getRulesSorted().stream()
+                                    .filter(r -> Arrays.asList(r.categories).contains(cat)).toList();
+                            listSettings(c.getSource(), filtered);
+                            return filtered.size();
+                        })));
 
-        // --- byproduct ---
         root.then(literal("byproduct")
                 .executes(c -> { showByproduct(c.getSource()); return 1; })
                 .then(argument("item", ItemArgument.item(buildContext))
@@ -61,24 +69,20 @@ public class HearthCommand {
                                     return count;
                                 }))));
 
-        // --- potionAffectEntity ---
         root.then(buildPotionAffectEntity());
 
-        // --- reload ---
         root.then(literal("reload").executes(c -> {
             HearthConfig.initialize();
             HearthMessenger.m(c.getSource(), "gi " + Component.translatable("commands.hearth.reload.success").getString());
             return 1;
         }));
 
-        // --- saveDefault ---
         root.then(literal("saveDefault").executes(c -> {
             HearthConfig.save();
             HearthMessenger.m(c.getSource(), "gi " + Component.translatable("commands.hearth.saveDefault.success").getString());
             return 1;
         }));
 
-        // --- <rule> ---
         root.then(argument("rule", StringArgumentType.word())
                 .suggests(RULE_SUGGEST)
                 .executes(c -> displayRuleMenu(c.getSource(), contextRule(c)))
@@ -90,33 +94,32 @@ public class HearthCommand {
     }
 
     // ============================================================
-    //  contextRule — like Carpet's contextRule
+    //  contextRule
     // ============================================================
 
     private static HearthRuleDef<?> contextRule(CommandContext<CommandSourceStack> ctx) {
         String name = StringArgumentType.getString(ctx, "rule");
         HearthRuleDef<?> rule = HearthConfig.getRule(name);
-        if (rule == null) throw new RuntimeException("Unknown rule: " + name); // won't happen due to suggestions
+        if (rule == null) throw new RuntimeException("Unknown rule: " + name);
         return rule;
     }
 
     // ============================================================
-    //  setRule — like Carpet's setRule
+    //  setRule
     // ============================================================
 
     private static int setRule(CommandSourceStack source, HearthRuleDef<?> rule, String newValue) {
         rule.set(source, newValue);
-        String displayName = rule.translatedName().getString();
         HearthMessenger.m(source,
-                "w " + rule.name() + " set to " + rule.value() + ", ",
+                "w " + rule.translatedName().getString() + " set to " + rule.value() + ", ",
                 "c [" + Component.translatable("commands.hearth.save.hint").getString() + "]",
-                "^w Click to save permanently",
+                "^w " + Component.translatable("commands.hearth.save.hover").getString(),
                 "?/hearth saveDefault");
         return 1;
     }
 
     // ============================================================
-    //  displayRuleMenu — like Carpet's displayRuleMenu
+    //  displayRuleMenu
     // ============================================================
 
     private static int displayRuleMenu(CommandSourceStack source, HearthRuleDef<?> rule) {
@@ -124,23 +127,24 @@ public class HearthCommand {
         String desc = rule.translatedDesc().getString();
 
         HearthMessenger.m(source, "");
-        HearthMessenger.m(source, "wb " + displayName, "?/hearth " + rule.name(), "^g Click to set");
+        HearthMessenger.m(source, "wb " + displayName, "?/hearth " + rule.name(), "^g " + displayName);
         HearthMessenger.m(source, "w " + desc);
 
-        // Categories
-        List<Object> tags = new ArrayList<>();
-        tags.add("w Categories: ");
-        tags.add("c [" + rule.categories[0] + "]");
-        HearthMessenger.m(source, tags.toArray());
+        // Category
+        HearthMessenger.m(source, "w " + Component.translatable("commands.hearth.ui.category").getString()
+                + ": ", "c [" + rule.categories[0] + "]");
 
         // Current value
-        String valStr = "nb " + rule.value();
-        if (rule.isDefault()) valStr = "lb " + rule.value();
-        HearthMessenger.m(source, "w Current value: ", valStr + " (" + (rule.isDefault() ? "default" : "modified") + ")");
+        String valStyle = rule.isDefault() ? "lb " : "nb ";
+        String status = rule.isDefault()
+                ? Component.translatable("commands.hearth.status.default").getString()
+                : Component.translatable("commands.hearth.status.changed").getString();
+        HearthMessenger.m(source, "w " + Component.translatable("commands.hearth.ui.current_value").getString()
+                + ": ", valStyle + rule.value() + " (" + status + ")");
 
-        // Options buttons
+        // Options
         List<Object> opts = new ArrayList<>();
-        opts.add("w Options: [ ");
+        opts.add("w " + Component.translatable("commands.hearth.ui.options").getString() + ": [ ");
         for (String o : rule.options) {
             opts.add(makeSetRuleButton(rule, o));
             opts.add("w  ");
@@ -153,35 +157,48 @@ public class HearthCommand {
     }
 
     // ============================================================
-    //  makeSetRuleButton — like Carpet's makeSetRuleButton
+    //  makeSetRuleButton — RETURNS COMPONENT with click/hover (反 Carpet)
     // ============================================================
 
-    private static String makeSetRuleButton(HearthRuleDef<?> rule, String option) {
+    private static Component makeSetRuleButton(HearthRuleDef<?> rule, String option) {
         boolean isCurrent = option.equalsIgnoreCase(String.valueOf(rule.value()));
         boolean isDefault = option.equalsIgnoreCase(String.valueOf(rule.defaultValue));
         String style = isDefault ? "e" : "y";
         if (isCurrent) style = style + "u" + (isDefault ? "b" : "");
-        return style + " [" + option + "]";
+        String label = style + " [" + option + "]";
+
+        if (isCurrent)
+            return HearthMessenger.c(label);
+
+        String hover = Component.translatable("commands.hearth.hover.switch_to").getString()
+                + " " + option + (isDefault ? " (" + Component.translatable("commands.hearth.status.default").getString() + ")" : "");
+        return HearthMessenger.c(label,
+                "^g " + hover,
+                "?/hearth " + rule.name() + " " + option);
     }
 
     // ============================================================
-    //  listAllSettings — like Carpet's listAllSettings
+    //  listAllSettings
     // ============================================================
 
     private static int listAllSettings(CommandSourceStack source) {
         Collection<HearthRuleDef<?>> nonDefault = HearthConfig.getRulesSorted().stream()
                 .filter(r -> !r.isDefault()).toList();
-        listSettings(source, nonDefault);
+
+        if (!nonDefault.isEmpty()) {
+            HearthMessenger.m(source, "wb " + Component.translatable("commands.hearth.ui.non_default").getString() + ":");
+            listSettings(source, nonDefault);
+        }
 
         // Category browser
         List<String> cats = HearthConfig.getRulesSorted().stream()
                 .map(r -> r.categories[0]).distinct().toList();
         List<Object> tagList = new ArrayList<>();
-        tagList.add("w Browse:\n");
+        tagList.add("w " + Component.translatable("commands.hearth.ui.browse").getString() + ":\n");
         for (String t : cats) {
             tagList.add("c [" + t + "]");
-            tagList.add("^g List all " + t + " rules");
-            tagList.add("!/hearth list");
+            tagList.add("^g " + Component.translatable("commands.hearth.hover.list_category").getString() + " " + t);
+            tagList.add("!/hearth list " + t);
             tagList.add("w  ");
         }
         if (!tagList.isEmpty()) tagList.remove(tagList.size() - 1);
@@ -197,7 +214,7 @@ public class HearthCommand {
     }
 
     // ============================================================
-    //  displayInteractiveSetting — like Carpet's displayInteractiveSetting
+    //  displayInteractiveSetting — one-line clickable rule summary
     // ============================================================
 
     private static Component displayInteractiveSetting(HearthRuleDef<?> rule) {
@@ -212,10 +229,6 @@ public class HearthCommand {
         if (!rule.options.isEmpty()) args.remove(args.size() - 1);
         return HearthMessenger.c(args.toArray());
     }
-
-    // ============================================================
-    //  showByproduct
-    // ============================================================
 
     private static void showByproduct(CommandSourceStack source) {
         var bp = HearthConfig.getByproductItem();
@@ -261,6 +274,10 @@ public class HearthCommand {
         HearthMessenger.m(ctx.getSource(), "gi " + Component.translatable("commands.hearth.potionAffectEntity.exclude", id).getString());
         return 1;
     }
+
+    // ============================================================
+    //  suggestions
+    // ============================================================
 
     private static final SuggestionProvider<CommandSourceStack> RULE_SUGGEST =
             (c, b) -> {
