@@ -6,10 +6,17 @@
 	"subtitles.hearth.wood_ash_shovel": "铲取草木灰",
 	"effect.hearth.cleansing": "荡涤",
 	"item.minecraft.potion.effect.cleansing": "荡涤药水",
-	"item.minecraft.splash_potion.effect.cleansing": "喷溅型荡涤药水",
-	"item.minecraft.lingering_potion.effect.cleansing": "滞留型荡涤药水",
 	"item.minecraft.potion.effect.long_cleansing": "荡涤药水",
 	"item.minecraft.potion.effect.strong_cleansing": "荡涤药水",
+	"item.minecraft.splash_potion.effect.cleansing": "喷溅型荡涤药水",
+	"item.minecraft.splash_potion.effect.long_cleansing": "喷溅型荡涤药水",
+	"item.minecraft.splash_potion.effect.strong_cleansing": "喷溅型荡涤药水",
+	"item.minecraft.lingering_potion.effect.cleansing": "滞留型荡涤药水",
+	"item.minecraft.lingering_potion.effect.long_cleansing": "滞留型荡涤药水",
+	"item.minecraft.lingering_potion.effect.strong_cleansing": "滞留型荡涤药水",
+	"item.minecraft.tipped_arrow.effect.cleansing": "荡涤之箭",
+	"item.minecraft.tipped_arrow.effect.long_cleansing": "荡涤之箭",
+	"item.minecraft.tipped_arrow.effect.strong_cleansing": "荡涤之箭",
 	"block.hearth.cleansing_cauldron": "荡涤药水炼药锅",
 	"block.hearth.potion_cauldron": "填药炼药锅",
 	"block.hearth.chimney": "烟囱",
@@ -55,5 +62,8 @@
 	"commands.hearth.help.potionAffectEntity.include": "将实体加入受影响列表",
 	"commands.hearth.help.potionAffectEntity.exclude": "将实体移出受影响列表",
 	"commands.hearth.help.reload": "重载配置文件",
-	"commands.hearth.help.saveDefault": "永久保存当前配置"
+	"commands.hearth.help.saveDefault": "永久保存当前配置",
+
+	"hud.hearth.repellent.remaining": "§e⏳ 剩余: %s",
+	"hud.hearth.repellent.potions": "§b🧪 药水: %s 瓶"
 }

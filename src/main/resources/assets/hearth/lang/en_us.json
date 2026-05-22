@@ -6,10 +6,18 @@
 	"subtitles.hearth.wood_ash_shovel": "Shovel Wood Ash",
 	"effect.hearth.cleansing": "Cleansing",
 	"item.minecraft.potion.effect.cleansing": "Potion of Cleansing",
-	"item.minecraft.splash_potion.effect.cleansing": "Splash Potion of Cleansing",
-	"item.minecraft.lingering_potion.effect.cleansing": "Lingering Potion of Cleansing",
 	"item.minecraft.potion.effect.long_cleansing": "Potion of Cleansing",
 	"item.minecraft.potion.effect.strong_cleansing": "Potion of Cleansing",
+	"item.minecraft.splash_potion.effect.cleansing": "Splash Potion of Cleansing",
+	"item.minecraft.splash_potion.effect.long_cleansing": "Splash Potion of Cleansing",
+	"item.minecraft.splash_potion.effect.strong_cleansing": "Splash Potion of Cleansing",
+	"item.minecraft.lingering_potion.effect.cleansing": "Lingering Potion of Cleansing",
+	"item.minecraft.lingering_potion.effect.long_cleansing": "Lingering Potion of Cleansing",
+	"item.minecraft.lingering_potion.effect.strong_cleansing": "Lingering Potion of Cleansing",
+	"item.minecraft.tipped_arrow.effect.cleansing": "Arrow of Cleansing",
+	"item.minecraft.tipped_arrow.effect.long_cleansing": "Arrow of Cleansing",
+	"item.minecraft.tipped_arrow.effect.strong_cleansing": "Arrow of Cleansing",
+
 	"block.hearth.cleansing_cauldron": "Cleansing Cauldron",
 	"block.hearth.potion_cauldron": "Potion-Filled Cauldron",
 	"block.hearth.chimney": "Chimney",
@@ -55,5 +63,8 @@
 	"commands.hearth.help.potionAffectEntity.include": "Add entity to affected list",
 	"commands.hearth.help.potionAffectEntity.exclude": "Remove entity from affected list",
 	"commands.hearth.help.reload": "Reload config from file",
-	"commands.hearth.help.saveDefault": "Save current config permanently"
+	"commands.hearth.help.saveDefault": "Save current config permanently",
+
+	"hud.hearth.repellent.remaining": "§e⏳ Remaining: %s",
+	"hud.hearth.repellent.potions": "§b🧪 Potions: %s bottles"
 }
